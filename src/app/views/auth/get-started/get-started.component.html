@@ -1,0 +1,94 @@
+<section class="hero is-fullheight">
+    <div class="hero-body" fxLayout="column" fxLayoutAlign="center center">
+        <div class="login">
+            <img src="https://logoipsum.com/logo/logo-1.svg" width="325px" />
+
+            <form [formGroup]="this.formRegister">
+
+                <div class="field">
+                    <!-- <label class="label">Email</label> -->
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" [ngClass]="{'is-danger': this.controlHasError('email') }"
+                            type="email" formControlName="email" name="email" placeholder="Email"
+                            autocomplete="username" required />
+                        <span class="icon is-left">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <span *ngIf="this.controlHasError('email')" class="icon is-right">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>
+                    </div>
+                    <p *ngIf="this.controlHasError('email') && this.formRegister.get('email').hasError('required')"
+                        class="help is-danger">Oops! Email is required</p>
+                    <p *ngIf="this.controlHasError('email') && this.formRegister.get('email').hasError('invalid')"
+                        class="help is-danger">Oops! Email is invalid</p>
+                    <p *ngIf="this.controlHasError('email') && this.formRegister.get('email').hasError('taken')"
+                        class="help is-danger">Oops! Email is already in use</p>
+                </div>
+
+                <div class="field">
+                    <!-- <label class="label">Password</label> -->
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input" [ngClass]="{'is-danger': this.controlHasError('password') }"
+                            type="password" formControlName="password" name="password" placeholder="Password" autocomplete="new-password"
+                            required />
+                        <span class="icon is-left">
+                            <i class="fas fa-key"></i>
+                        </span>
+                        <span *ngIf="this.controlHasError('password')" class="icon is-right">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>
+                    </div>
+                    <p *ngIf="this.controlHasError('password') && this.formRegister.get('password').hasError('required')"
+                        class="help is-danger">Oops! Password is required</p>
+                </div>
+
+                <div class="field">
+                    <!-- <label class="label">Confirm password</label> -->
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input"
+                            [ngClass]="{'is-danger': this.controlHasError('confirm_password') }" type="password"
+                            formControlName="confirm_password" name="confirm_password" placeholder="Confirm password"  autocomplete="new-password"
+                            required />
+                        <span class="icon is-left">
+                            <i class="fas fa-key"></i>
+                        </span>
+                        <span *ngIf="this.controlHasError('confirm_password')" class="icon is-right">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </span>
+                    </div>
+                    <p *ngIf="this.controlHasError('confirm_password') && this.formRegister.get('confirm_password').hasError('required')"
+                        class="help is-danger">Oops! Password confirmation is required</p>
+                    <p *ngIf="this.controlHasError('confirm_password') && this.formRegister.get('confirm_password').hasError('noMatch')"
+                        class="help is-danger">Oops! Passwords do not match</p>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                      <label class="checkbox" [ngClass]="{'has-text-danger': this.controlHasError('terms') }">
+                        <input type="checkbox" formControlName="terms" name="terms">
+                        I agree to to nothing except for storing my data securely in a database on a server.
+                      </label>
+                    </div>
+                  </div>
+
+
+                <br />
+                <button (click)="this.onRegister()" class="button is-block is-fullwidth is-primary"
+                    [ngClass]="{'is-loading': this.isLoading}" type="button">
+                    Create account
+                </button>
+
+            </form>
+
+            <br>
+            <nav class="level">
+                <div class="level-item has-text-centered">
+                    <div>
+                        <a [routerLink]="['/sign-in']">Already have an account?</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</section>

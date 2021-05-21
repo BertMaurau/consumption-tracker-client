@@ -1,0 +1,69 @@
+<section class="hero is-fullheight">
+  <div class="hero-body" fxLayout="column" fxLayoutAlign="center center">
+    <div class="login">
+      <img src="https://logoipsum.com/logo/logo-1.svg" width="325px" />
+
+      <form [formGroup]="this.formLogin">
+
+        <div class="field">
+          <!-- <label class="label">Email</label> -->
+          <div class="control has-icons-left has-icons-right">
+            <input class="input" (change)="this.clearControlErrors('email')" [ngClass]="{'is-danger': this.controlHasError('email') }" type="email"
+              formControlName="email" name="email" placeholder="Email" autocomplete="username" required />
+            <span class="icon is-left">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <span *ngIf="this.controlHasError('email')" class="icon is-right">
+              <i class="fas fa-exclamation-triangle"></i>
+            </span>
+          </div>
+          <p *ngIf="this.controlHasError('email') && this.formLogin.get('email').hasError('required')"
+            class="help is-danger">Oops! Email is required</p>
+          <p *ngIf="this.controlHasError('email') && this.formLogin.get('email').hasError('invalid')"
+            class="help is-danger">Oops! Email is invalid</p>
+          <p *ngIf="this.controlHasError('email') && this.formLogin.get('email').hasError('notFound')"
+            class="help is-danger">Oops! No account found</p>
+        </div>
+
+        <div class="field">
+          <!-- <label class="label">Password</label> -->
+          <div class="control has-icons-left has-icons-right">
+            <input class="input" (change)="this.clearControlErrors('password')" [ngClass]="{'is-danger': this.controlHasError('password') }" type="password"
+              formControlName="password" name="password" placeholder="Password" autocomplete="new-password" required />
+            <span class="icon is-left">
+              <i class="fas fa-key"></i>
+            </span>
+            <span *ngIf="this.controlHasError('password')" class="icon is-right">
+              <i class="fas fa-exclamation-triangle"></i>
+            </span>
+          </div>
+          <p *ngIf="this.controlHasError('password') && this.formLogin.get('password').hasError('required')"
+            class="help is-danger">Oops! Password is required</p>
+          <p *ngIf="this.controlHasError('password') && this.formLogin.get('password').hasError('invalid')"
+            class="help is-danger">Oops! Password is invalid</p>
+        </div>
+
+        <br />
+        <button (click)="this.onSignIn()" class="button is-block is-fullwidth is-primary"
+          [ngClass]="{'is-loading': this.isLoading}" type="button">
+          Sign in
+        </button>
+
+      </form>
+
+      <br>
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <div>
+            <a [routerLink]="['/forgot-password']">Forgot password?</a>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <a [routerLink]="['/get-started']">Create account</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
