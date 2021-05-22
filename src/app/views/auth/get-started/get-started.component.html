@@ -1,9 +1,10 @@
 <section class="hero is-fullheight">
     <div class="hero-body" fxLayout="column" fxLayoutAlign="center center">
-        <div class="login">
-            <img src="https://logoipsum.com/logo/logo-1.svg" width="325px" />
 
-            <form [formGroup]="this.formRegister">
+        <div class="login card has-text-centered p-4">
+            <img src="/assets/icons/icon-96x96.png" width="auto" height="96px"/>
+
+            <form [formGroup]="this.formRegister" class="mt-4">
 
                 <div class="field">
                     <!-- <label class="label">Email</label> -->
@@ -19,11 +20,11 @@
                         </span>
                     </div>
                     <p *ngIf="this.controlHasError('email') && this.formRegister.get('email').hasError('required')"
-                        class="help is-danger">Oops! Email is required</p>
+                        class="help is-danger has-text-left">Oops! Email is required</p>
                     <p *ngIf="this.controlHasError('email') && this.formRegister.get('email').hasError('invalid')"
-                        class="help is-danger">Oops! Email is invalid</p>
+                        class="help is-danger has-text-left">Oops! Email is invalid</p>
                     <p *ngIf="this.controlHasError('email') && this.formRegister.get('email').hasError('taken')"
-                        class="help is-danger">Oops! Email is already in use</p>
+                        class="help is-danger has-text-left">Oops! Email is already in use</p>
                 </div>
 
                 <div class="field">
@@ -40,7 +41,7 @@
                         </span>
                     </div>
                     <p *ngIf="this.controlHasError('password') && this.formRegister.get('password').hasError('required')"
-                        class="help is-danger">Oops! Password is required</p>
+                        class="help is-danger has-text-left">Oops! Password is required</p>
                 </div>
 
                 <div class="field">
@@ -58,37 +59,32 @@
                         </span>
                     </div>
                     <p *ngIf="this.controlHasError('confirm_password') && this.formRegister.get('confirm_password').hasError('required')"
-                        class="help is-danger">Oops! Password confirmation is required</p>
+                        class="help is-danger has-text-left">Oops! Password confirmation is required</p>
                     <p *ngIf="this.controlHasError('confirm_password') && this.formRegister.get('confirm_password').hasError('noMatch')"
-                        class="help is-danger">Oops! Passwords do not match</p>
+                        class="help is-danger has-text-left">Oops! Passwords do not match</p>
                 </div>
 
-                <div class="field">
-                    <div class="control">
-                      <label class="checkbox" [ngClass]="{'has-text-danger': this.controlHasError('terms') }">
-                        <input type="checkbox" formControlName="terms" name="terms">
+                <div class="field mt-4">
+                    <div class="control" fxLayout="row">
+                      <input class="mt-1 mr-2" type="checkbox" formControlName="terms" name="terms" id="terms">
+                      <label for="terms" class="checkbox is-size-6" [ngClass]="{'has-text-danger': this.controlHasError('terms') }">
                         I agree to to nothing except for storing my data securely in a database on a server.
                       </label>
                     </div>
                   </div>
 
 
-                <br />
-                <button (click)="this.onRegister()" class="button is-block is-fullwidth is-primary"
+                <button (click)="this.onRegister()" class="button is-block is-fullwidth is-link mt-4"
                     [ngClass]="{'is-loading': this.isLoading}" type="button">
                     Create account
                 </button>
 
-            </form>
+                <div class="separator"><span>or</span></div>
 
-            <br>
-            <nav class="level">
-                <div class="level-item has-text-centered">
-                    <div>
-                        <a [routerLink]="['/sign-in']">Already have an account?</a>
-                    </div>
-                </div>
-            </nav>
+                <button [routerLink]="['/sign-in']" class="button is-block is-fullwidth" type="button">
+                    Sign in
+                  </button>
+            </form>
         </div>
     </div>
 </section>

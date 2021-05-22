@@ -1,1 +1,88 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+.separator {
+    border-top: 1px solid #cbd2d6;
+    position: relative;
+    margin: 25px 0 5px;
+    text-align: center;
+
+    span {
+        background-color: #fff;
+        padding: 0 .5em;
+        position: relative;
+        color: #6c7378;
+        top: -.8em;
+    }
+}
+
+/* Margin/Padding/.. helper classes */
+$marginKey: "m";
+$paddingKey: "p";
+$spacer: 1;
+$sizeUnit: rem;
+$separator: "-";
+$sizes: (
+  ("0", 0),
+  ("auto", auto),
+  ("1", $spacer * 0.25),
+  ("2", $spacer * 0.5),
+  ("3", $spacer),
+  ("4", $spacer * 1.5),
+  ("5", $spacer * 3),
+);
+$positions: (
+  ("t", "top"),
+  ("r", "right"),
+  ("b", "bottom"),
+  ("l", "left"),
+  ("x", "x"),
+  ("y", "y")
+);
+
+@function sizeValue($key, $value) {
+  @if ($key == "0") {
+    @return 0;
+  } @else if ($key == "auto") {
+    @return auto;
+  } @else {
+    @return $value + $sizeUnit;
+  }
+}
+
+@each $size in $sizes {
+  $sizeKey: nth($size, 1);
+  $sizeValue: nth($size, 2);
+  .#{$marginKey}#{$separator}#{$sizeKey} {
+    margin: sizeValue($sizeKey, $sizeValue);
+  }
+  .#{$paddingKey}#{$separator}#{$sizeKey} {
+    padding: sizeValue($sizeKey, $sizeValue);
+  }
+  @each $position in $positions {
+    $posKey: nth($position, 1);
+    $posValue: nth($position, 2);
+    .#{$marginKey}#{$posKey}#{$separator}#{$sizeKey} {
+      @if $posValue == "x" {
+        margin-left: sizeValue($sizeKey, $sizeValue);
+        margin-right: sizeValue($sizeKey, $sizeValue);
+      } @else if $posValue == "y" {
+        margin-top: sizeValue($sizeKey, $sizeValue);
+        margin-bottom: sizeValue($sizeKey, $sizeValue);
+      } @else {
+        margin-#{$posValue}: sizeValue($sizeKey, $sizeValue);
+      }
+    }
+    .#{$paddingKey}#{$posKey}#{$separator}#{$sizeKey} {
+      @if $posValue == "x" {
+        padding-left: sizeValue($sizeKey, $sizeValue);
+        padding-right: sizeValue($sizeKey, $sizeValue);
+      } @else if $posValue == "y" {
+        padding-top: sizeValue($sizeKey, $sizeValue);
+        padding-bottom: sizeValue($sizeKey, $sizeValue);
+      } @else {
+        padding-#{$posValue}: sizeValue($sizeKey, $sizeValue);
+      }
+    }
+  }
+}

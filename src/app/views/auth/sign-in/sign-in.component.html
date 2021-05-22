@@ -1,9 +1,10 @@
 <section class="hero is-fullheight">
   <div class="hero-body" fxLayout="column" fxLayoutAlign="center center">
-    <div class="login">
-      <img src="https://logoipsum.com/logo/logo-1.svg" width="325px" />
 
-      <form [formGroup]="this.formLogin">
+    <div class="login card has-text-centered p-4">
+      <img src="/assets/icons/icon-96x96.png" width="auto" height="96px"/>
+
+      <form [formGroup]="this.formLogin" class="mt-4">
 
         <div class="field">
           <!-- <label class="label">Email</label> -->
@@ -18,11 +19,11 @@
             </span>
           </div>
           <p *ngIf="this.controlHasError('email') && this.formLogin.get('email').hasError('required')"
-            class="help is-danger">Oops! Email is required</p>
+            class="help is-danger has-text-left">Oops! Email is required</p>
           <p *ngIf="this.controlHasError('email') && this.formLogin.get('email').hasError('invalid')"
-            class="help is-danger">Oops! Email is invalid</p>
+            class="help is-danger has-text-left">Oops! Email is invalid</p>
           <p *ngIf="this.controlHasError('email') && this.formLogin.get('email').hasError('notFound')"
-            class="help is-danger">Oops! No account found</p>
+            class="help is-danger has-text-left">Oops! No account found</p>
         </div>
 
         <div class="field">
@@ -38,32 +39,28 @@
             </span>
           </div>
           <p *ngIf="this.controlHasError('password') && this.formLogin.get('password').hasError('required')"
-            class="help is-danger">Oops! Password is required</p>
+            class="help is-danger has-text-left">Oops! Password is required</p>
           <p *ngIf="this.controlHasError('password') && this.formLogin.get('password').hasError('invalid')"
-            class="help is-danger">Oops! Password is invalid</p>
+            class="help is-danger has-text-left">Oops! Password is invalid</p>
         </div>
 
-        <br />
-        <button (click)="this.onSignIn()" class="button is-block is-fullwidth is-primary"
+        <div class="has-text-left mt-4">
+          <a class="is-size-6" [routerLink]="['/forgot-password']">Forgot password?</a>
+        </div>
+
+        <button (click)="this.onSignIn()" class="button is-block is-fullwidth is-link mt-2"
           [ngClass]="{'is-loading': this.isLoading}" type="button">
           Sign in
         </button>
 
+        <div class="separator"><span>or</span></div>
+
+        <button [routerLink]="['/get-started']" class="button is-block is-fullwidth" type="button">
+          Create account
+        </button>
+
       </form>
 
-      <br>
-      <nav class="level">
-        <div class="level-item has-text-centered">
-          <div>
-            <a [routerLink]="['/forgot-password']">Forgot password?</a>
-          </div>
-        </div>
-        <div class="level-item has-text-centered">
-          <div>
-            <a [routerLink]="['/get-started']">Create account</a>
-          </div>
-        </div>
-      </nav>
     </div>
   </div>
 </section>
