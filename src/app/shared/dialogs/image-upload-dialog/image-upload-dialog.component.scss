@@ -1,0 +1,17 @@
+.drop-zone {
+    width: 100%;
+    min-height: 110px;
+    border: 2px dashed #dbdbdb;
+    border-radius: 4px;
+    min-width: 320px;
+    margin: 13px 0;
+    span{
+        max-width: 150px;
+        opacity: .7;
+        text-align: center;
+        font-size: 12px;
+    }
+}
+.drop-zone-active {
+    border-color: #ec5294;
+}

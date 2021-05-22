@@ -1,34 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AuthService } from 'src/app/core/providers/auth.service';
 import { Md5 } from 'ts-md5';
 
 @Component({
-  selector: 'app-get-started',
-  templateUrl: './get-started.component.html',
-  styleUrls: ['./get-started.component.scss']
+  selector: 'app-reset-password',
+  templateUrl: './reset-password.component.html',
+  styleUrls: ['./reset-password.component.scss']
 })
-export class GetStartedComponent {
+export class ResetPasswordComponent {
 
-  public formRegister: FormGroup;
+  public formReset: FormGroup;
 
   public isLoading: boolean = false;
   public hasSubmitted: boolean = false;
+  public hasResetSent: boolean = false;
 
   public error: string = null;
+
+  private _resetToken: string = null;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private $auth: AuthService,
   ) {
-    this.formRegister = this.formBuilder.group({
-      email: [null, [Validators.required, Validators.email]],
+    this.formReset = this.formBuilder.group({
       password: ['', [Validators.required]],
       confirm_password: ['', [Validators.required]],
-      terms: [false, [Validators.required, Validators.requiredTrue]],
     }, { validator: this._validatePasswords('password', 'confirm_password') });
+
+    this.activatedRoute.queryParamMap.subscribe((queryParamMap: ParamMap) => {
+      this._resetToken = queryParamMap.get('token');
+    })
   }
 
   /**
@@ -38,7 +44,7 @@ export class GetStartedComponent {
    */
   public controlHasError(controlName: string): boolean {
     // check if the user already touched the fields
-    return !!(this.hasSubmitted && this.formRegister.get(controlName).invalid && (this.formRegister.get(controlName).dirty || this.formRegister.get(controlName).touched) && this.formRegister.get(controlName).errors);
+    return !!(this.hasSubmitted && this.formReset.get(controlName).invalid && (this.formReset.get(controlName).dirty || this.formReset.get(controlName).touched) && this.formReset.get(controlName).errors);
   }
 
   /**
@@ -47,14 +53,14 @@ export class GetStartedComponent {
    * @returns {void}
    */
   public clearControlErrors(controlName: string): void {
-    this.formRegister.get(controlName).setErrors(null);
+    this.formReset.get(controlName).setErrors(null);
   }
 
   /**
-   * Do form stuff and make the register call
+   * Do form stuff and make the reset call
    * @returns {void}
    */
-  public onRegister(): void {
+  public onReset(): void {
 
     this.error = null;
 
@@ -62,42 +68,28 @@ export class GetStartedComponent {
     this.hasSubmitted = true;
 
     // mark them all as touched so that errors get triggered
-    this.formRegister.markAllAsTouched();
+    this.formReset.markAllAsTouched();
 
-    if (!this.formRegister.valid) {
+    if (!this.formReset.valid) {
       return;
     }
 
     this.isLoading = true;
 
     const payload: any = {
-      email: this.formRegister.controls.email.value,
-      password: Md5.hashStr(this.formRegister.controls.password.value),
+      token: this._resetToken,
+      password: Md5.hashStr(this.formReset.controls.password.value),
     }
 
-    this.$auth.register(payload).then((authUser: any) => {
+    this.$auth.resetPassword(payload).then((authUser: any) => {
       // do other stuff here
       // ..
 
-      // send the user to the dashboard
-      this.router.navigate(['/dashboard']);
+      this.hasResetSent = true;
+
     }, (err: any) => {
-
       this.isLoading = false;
-
-      switch (err.error.code) {
-        case 406:
-          // Already a user in the system with that email
-          this.formRegister.get('email').setErrors({ taken: true });
-          break;
-        case 422:
-          // Email value is an invalid email address
-          this.formRegister.get('email').setErrors({ invalid: true });
-          break;
-        default:
-          this.error = err.error.message;
-          break;
-      }
+      this.error = err.error.message;
     });
 
   }

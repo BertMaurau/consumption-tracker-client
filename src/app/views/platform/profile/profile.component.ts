@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/core/providers/auth.service';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class ProfileComponent implements OnInit {
 
   public authUser: any = {};
+
+  public isEditing: boolean = false;
+  public hasChanged: boolean = false;
 
   constructor(
     private $auth: AuthService,
@@ -18,8 +21,6 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  ngOnInit() {
-    
+  ngOnInit(): void {
   }
-
 }

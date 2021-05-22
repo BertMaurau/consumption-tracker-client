@@ -1,0 +1,49 @@
+<div mat-dialog-header class="dialog-header" fxLayout="row" style="align-items: center;">
+    <h1 fxFlex>Upload image</h1>
+
+    <button class="button is-normal" (click)="this.onClose()" matTooltip="Close">
+        <span class="icon is-small">
+            <i class="fas fa-times"></i>
+        </span>
+    </button>
+
+</div>
+<div mat-dialog-content fxLayout="column">
+    <div fxLayout="column" style="justify-content: center;align-items: center;">
+
+        <input #fileSelect class="force-hidden" [(ngModel)]="this.selectedFile" type="file" accept="image/*"  (change)="this.fileChangeEvent($event)" />
+
+        <ng-container *ngIf="!this.newImage">
+
+            <div dndDropzone class="drop-zone" [ngClass]="this.dropConfig.hasBaseDropZoneOver ? 'drop-zone-active' : ''" (click)="fileSelect.click()" (fileOver)="this.dropConfig.hasBaseDropZoneOver=$event" [dndAllowExternal]="true" (dndDrop)="this.onFileDrop($event)" fxLayoutAlign="center center">
+                <span>Drop file here or click to upload (up to 2MB)</span>
+            </div>
+
+        </ng-container>
+        <ng-container *ngIf="this.newImage">
+            <image-cropper [roundCropper]="true" [imageBase64]="this.newImage"
+                [maintainAspectRatio]="true" [aspectRatio]="1 / 1" format="png"
+                (imageCropped)="this.imageCropped($event)"
+                ></image-cropper>
+        </ng-container>
+
+        <!-- <img class="avatar-large" [src]="this.croppedImage"> -->
+
+        <!-- <a class="has-text-info is-small" style="margin-top: 8px;" (click)="fileSelect.click()">
+            Upload file
+        </a> -->
+
+        <!-- <button class="button" style="border-radius: 50%;" (click)="fileSelect.click()">
+            <span class="icon is-small">
+                <i class="fas fa-camera"></i>
+            </span>
+        </button> -->
+
+    </div>
+
+    <div class="dialog-actions" fxLayout="row" fxLayoutAlign="flex-end">
+        <button style="margin-left:8px;" *ngIf="this.newImage" [ngClass]="this.isLoading ? 'is-loading' : ''" [disabled]="!this.newImage || this.isLoading" class="button is-info is-small is-filled"
+            (click)="this.onClose()">Upload image</button>
+    </div>
+
+</div>

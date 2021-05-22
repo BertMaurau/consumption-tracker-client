@@ -2,15 +2,20 @@
   <div class="hero-body" fxLayout="column" fxLayoutAlign="center center">
 
     <div class="login card has-text-centered p-4">
-      <img src="/assets/icons/icon-96x96.png" width="auto" height="96px"/>
+      <img src="/assets/icons/icon-96x96.png" width="auto" height="96px" />
 
       <form [formGroup]="this.formLogin" class="mt-4">
+
+        <div *ngIf="this.error" class="notification is-danger is-light mt-4">
+          <span class="is-size-7">{{ this.error }}</span>
+        </div>
 
         <div class="field">
           <!-- <label class="label">Email</label> -->
           <div class="control has-icons-left has-icons-right">
-            <input class="input" (change)="this.clearControlErrors('email')" [ngClass]="{'is-danger': this.controlHasError('email') }" type="email"
-              formControlName="email" name="email" placeholder="Email" autocomplete="username" required />
+            <input class="input" (change)="this.clearControlErrors('email')"
+              [ngClass]="{'is-danger': this.controlHasError('email') }" type="email" formControlName="email"
+              name="email" placeholder="Email" autocomplete="username" required />
             <span class="icon is-left">
               <i class="fas fa-envelope"></i>
             </span>
@@ -29,8 +34,9 @@
         <div class="field">
           <!-- <label class="label">Password</label> -->
           <div class="control has-icons-left has-icons-right">
-            <input class="input" (change)="this.clearControlErrors('password')" [ngClass]="{'is-danger': this.controlHasError('password') }" type="password"
-              formControlName="password" name="password" placeholder="Password" autocomplete="new-password" required />
+            <input class="input" (change)="this.clearControlErrors('password')"
+              [ngClass]="{'is-danger': this.controlHasError('password') }" type="password" formControlName="password"
+              name="password" placeholder="Password" autocomplete="new-password" required />
             <span class="icon is-left">
               <i class="fas fa-key"></i>
             </span>

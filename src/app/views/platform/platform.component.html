@@ -1,4 +1,4 @@
-<nav class="navbar">
+<nav class="navbar is-link">
 
     <div class="navbar-brand">
         <a class="navbar-item">
@@ -7,13 +7,28 @@
     </div>
 
     <div class="navbar-menu">
-        <div class="navbar-end">
-            <div class="navbar-item">
-                hello
-            </div>
+        <div class="navbar-start">
+          <a class="navbar-item" [routerLink]="['/dashboard']" [routerLinkActive]="['is-active']">
+            Summary
+          </a>
+          <a class="navbar-item" [routerLink]="['/consumptions']" [routerLinkActive]="['is-active']">
+            Consumptions
+          </a>
         </div>
-    </div>
+    
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="field is-grouped">
+              <p class="control">
+                <a class="button is-link" [routerLink]="['/profile']">
+                  <img class="avatar" [src]="this.authUser.attributes.images_url + '/' + this.authUser.guid + '.jpg'">
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 </nav>
-<div class="page-content">
+<div class="container">
     <router-outlet></router-outlet>
 </div>

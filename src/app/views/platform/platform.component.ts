@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/core/providers/auth.service';
 
 @Component({
   selector: 'app-platform',
@@ -7,7 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PlatformComponent implements OnInit {
 
-  constructor() { }
+  public authUser: any = {};
+
+  constructor(
+    private $auth: AuthService,
+  ) { 
+    this.$auth.authUser.subscribe((authUser: any) => {
+      this.authUser = authUser;
+    })
+  }
 
   ngOnInit(): void {
   }

@@ -1,0 +1,92 @@
+<section class="section">
+    <h1 class="title">Profile</h1>
+    <h2 class="subtitle">
+        Manage your profile and account settings.
+    </h2>
+</section>
+
+
+<section fxLayout="row">
+
+    <section>
+        
+        <section class="p-4" fxLayout="column" fxLayoutAlign="center center">
+            <img class="avatar" [src]="this.authUser.attributes.images_url + '/' + this.authUser.guid + '.jpg'">
+            <button class="button is-link is-inverted is-fullwidth is-small">
+                <span>Upload avatar</span>
+            </button>
+        </section>
+    </section>
+    <section fxLayout="column" class="p-4">
+
+        <section fxLayout="row">
+            <h2 fxFlex class="subtitle">Contact</h2>
+            <button class="button is-link is-inverted">
+                <span>Edit</span>
+            </button>
+        </section>
+
+        <section fxLayout="row" fxLayoutAlign="center center">
+            <div fxFlex="128px" class="field-label">
+                <label class="label">First name</label>
+            </div>
+            <div fxFlex class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input class="input" [ngClass]="{'is-static': !this.isEditing}" name="first_name" type="text"
+                            [(ngModel)]="this.authUser.first_name" (ngModelChange)="this.hasChanged = true;"
+                            [readonly]="this.isEditing ? false : true" placeholder="First name">
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section fxLayout="row" fxLayoutAlign="center center">
+            <div fxFlex="128px" class="field-label">
+                <label class="label">Last name</label>
+            </div>
+            <div fxFlex class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input class="input" [ngClass]="{'is-static': !this.isEditing}" name="last_name" type="text"
+                            [(ngModel)]="this.authUser.last_name" (ngModelChange)="this.hasChanged = true;"
+                            [readonly]="this.isEditing ? false : true" placeholder="Last name">
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section fxLayout="row" fxLayoutAlign="center center">
+            <div fxFlex="128px" class="field-label">
+                <label class="label">Email</label>
+            </div>
+            <div fxFlex class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input class="input" [ngClass]="{'is-static': !this.isEditing}" name="email" type="email"
+                            [(ngModel)]="this.authUser.email" (ngModelChange)="this.hasChanged = true;"
+                            [readonly]="this.isEditing ? false : true" placeholder="Email">
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section fxLayout="row" class="mt-4">
+            <h2 fxFlex class="subtitle">Account</h2>
+        </section>
+
+        <button class="button is-link is-inverted is-fullwidth has-text-left">
+            <span>Change password</span>
+        </button>
+
+        <button class="button is-link is-inverted is-fullwidth has-text-left">
+            <span>Logout</span>
+        </button>
+
+
+    </section>
+</section>
+
+
+<!-- Watchamacallit, the thing to switch from metric to .. ( ML / OZ) -->
+<!-- Maybe timezone info -->

@@ -42,7 +42,7 @@ export class AuthService {
   /**
    * Get the current auth-user's information
    */
-   public me(): Promise<any> {
+  public me(): Promise<any> {
 
     return new Promise<any>((resolve, reject) => {
       // get users from API
@@ -159,6 +159,40 @@ export class AuthService {
           this.authUser.next(this.authUserData);
 
           resolve(user);
+        }
+      }, (err: HttpErrorResponse) => {
+        reject(err);
+      });
+    });
+  }
+
+  /**
+   * Request reset password
+   */
+  public requestPasswordReset(payload: any): Promise<any> {
+
+    return new Promise<any>((resolve, reject) => {
+      // get users from API
+      this.$server.post(`/password-resets/request`, payload).subscribe((userPasswordReset: any) => {
+        if (userPasswordReset) {
+          resolve(userPasswordReset);
+        }
+      }, (err: HttpErrorResponse) => {
+        reject(err);
+      });
+    });
+  }
+
+  /**
+   * Reset password
+   */
+  public resetPassword(payload: any): Promise<any> {
+
+    return new Promise<any>((resolve, reject) => {
+      // get users from API
+      this.$server.post(`/password-resets/reset`, payload).subscribe((userPasswordReset: any) => {
+        if (userPasswordReset) {
+          resolve(userPasswordReset);
         }
       }, (err: HttpErrorResponse) => {
         reject(err);

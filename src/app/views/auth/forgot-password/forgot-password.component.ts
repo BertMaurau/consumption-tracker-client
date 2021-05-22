@@ -1,20 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/providers/auth.service';
 import { Md5 } from 'ts-md5';
 
 @Component({
-  selector: 'app-sign-in',
-  templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.scss'],
+  selector: 'app-forgot-password',
+  templateUrl: './forgot-password.component.html',
+  styleUrls: ['./forgot-password.component.scss']
 })
-export class SignInComponent {
+export class ForgotPasswordComponent {
 
-  public formLogin: FormGroup;
+  public formReset: FormGroup;
 
   public isLoading: boolean = false;
   public hasSubmitted: boolean = false;
+  public hasSentEmail: boolean = false;
 
   public error: string = null;
 
@@ -23,9 +24,8 @@ export class SignInComponent {
     private router: Router,
     private $auth: AuthService,
   ) {
-    this.formLogin = this.formBuilder.group({
+    this.formReset = this.formBuilder.group({
       email: [null, [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
     });
   }
 
@@ -36,7 +36,7 @@ export class SignInComponent {
    */
   public controlHasError(controlName: string): boolean {
     // check if the user already touched the fields
-    return !!(this.hasSubmitted && this.formLogin.get(controlName).invalid && (this.formLogin.get(controlName).dirty || this.formLogin.get(controlName).touched) && this.formLogin.get(controlName).errors);
+    return !!(this.hasSubmitted && this.formReset.get(controlName).invalid && (this.formReset.get(controlName).dirty || this.formReset.get(controlName).touched) && this.formReset.get(controlName).errors);
   }
 
   /**
@@ -45,14 +45,14 @@ export class SignInComponent {
    * @returns {void}
    */
   public clearControlErrors(controlName: string): void {
-    this.formLogin.get(controlName).setErrors(null);
+    this.formReset.get(controlName).setErrors(null);
   }
 
   /**
    * Do form stuff and make the sign-in call
    * @returns {void}
    */
-  public onSignIn(): void {
+  public onSendReset(): void {
 
     this.error = null;
 
@@ -60,43 +60,37 @@ export class SignInComponent {
     this.hasSubmitted = true;
 
     // mark them all as touched so that errors get triggered
-    this.formLogin.markAllAsTouched();
+    this.formReset.markAllAsTouched();
 
-    if (!this.formLogin.valid) {
+    if (!this.formReset.valid) {
       return;
     }
 
     this.isLoading = true;
 
     const payload: any = {
-      email: this.formLogin.controls.email.value,
-      password: Md5.hashStr(this.formLogin.controls.password.value),
+      email: this.formReset.controls.email.value,
     }
 
-    this.$auth.login(payload).then((authUser: any) => {
+    this.$auth.requestPasswordReset(payload).then((userPasswordReset: any) => {
 
       // do other stuff here
       // ..
 
-      // send the user to the dashboard
-      this.router.navigate(['/dashboard']);
+      this.hasSentEmail = true;
 
     }, (err: any) => {
 
       this.isLoading = false;
       
       switch (err.error.code) {
-        case 401:
-          // Invalid password for given email combo
-          this.formLogin.get('password').setErrors({ invalid: true });
-          break;
         case 404:
           // No user account found for given email address
-          this.formLogin.get('email').setErrors({ notFound: true });
+          this.formReset.get('email').setErrors({ notFound: true });
           break;
         case 422:
           // Email value is an invalid email address
-          this.formLogin.get('email').setErrors({ invalid: true });
+          this.formReset.get('email').setErrors({ invalid: true });
           break;
         default:
           this.error = err.error.message;
@@ -105,5 +99,4 @@ export class SignInComponent {
     });
 
   }
-
 }

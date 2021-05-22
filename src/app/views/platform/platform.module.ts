@@ -5,6 +5,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PlatformComponent } from './platform.component';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardService } from 'src/app/core/guards/auth-guard.service';
+import { ProfileComponent } from './profile/profile.component';
+import { ConsumptionsComponent } from './consumptions/consumptions.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/dashboard' },
@@ -12,7 +14,9 @@ const routes: Routes = [
     path: '',
     component: PlatformComponent,
     children: [
+      { path: 'profile', component: ProfileComponent },
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'consumptions', component: ConsumptionsComponent },
     ],
     canActivate: [AuthGuardService],
   },
@@ -20,7 +24,7 @@ const routes: Routes = [
 
 
 @NgModule({
-  declarations: [DashboardComponent, PlatformComponent],
+  declarations: [DashboardComponent, PlatformComponent, ProfileComponent, ConsumptionsComponent],
   imports: [
     CommonModule,
     SharedModule,

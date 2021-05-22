@@ -2,16 +2,19 @@
     <div class="hero-body" fxLayout="column" fxLayoutAlign="center center">
 
         <div class="login card has-text-centered p-4">
-            <img src="/assets/icons/icon-96x96.png" width="auto" height="96px"/>
+            <img src="/assets/icons/icon-96x96.png" width="auto" height="96px" />
 
             <form [formGroup]="this.formRegister" class="mt-4">
+
+                <div *ngIf="this.error" class="notification is-danger is-light mt-4">
+                    <span class="is-size-7">{{ this.error }}</span>
+                </div>
 
                 <div class="field">
                     <!-- <label class="label">Email</label> -->
                     <div class="control has-icons-left has-icons-right">
-                        <input class="input" [ngClass]="{'is-danger': this.controlHasError('email') }"
-                            type="email" formControlName="email" name="email" placeholder="Email"
-                            autocomplete="username" required />
+                        <input class="input" [ngClass]="{'is-danger': this.controlHasError('email') }" type="email"
+                            formControlName="email" name="email" placeholder="Email" autocomplete="username" required />
                         <span class="icon is-left">
                             <i class="fas fa-envelope"></i>
                         </span>
@@ -31,8 +34,8 @@
                     <!-- <label class="label">Password</label> -->
                     <div class="control has-icons-left has-icons-right">
                         <input class="input" [ngClass]="{'is-danger': this.controlHasError('password') }"
-                            type="password" formControlName="password" name="password" placeholder="Password" autocomplete="new-password"
-                            required />
+                            type="password" formControlName="password" name="password" placeholder="Password"
+                            autocomplete="new-password" required />
                         <span class="icon is-left">
                             <i class="fas fa-key"></i>
                         </span>
@@ -47,10 +50,9 @@
                 <div class="field">
                     <!-- <label class="label">Confirm password</label> -->
                     <div class="control has-icons-left has-icons-right">
-                        <input class="input"
-                            [ngClass]="{'is-danger': this.controlHasError('confirm_password') }" type="password"
-                            formControlName="confirm_password" name="confirm_password" placeholder="Confirm password"  autocomplete="new-password"
-                            required />
+                        <input class="input" [ngClass]="{'is-danger': this.controlHasError('confirm_password') }"
+                            type="password" formControlName="confirm_password" name="confirm_password"
+                            placeholder="Confirm password" autocomplete="new-password" required />
                         <span class="icon is-left">
                             <i class="fas fa-key"></i>
                         </span>
@@ -66,12 +68,13 @@
 
                 <div class="field mt-4">
                     <div class="control" fxLayout="row">
-                      <input class="mt-1 mr-2" type="checkbox" formControlName="terms" name="terms" id="terms">
-                      <label for="terms" class="checkbox is-size-6" [ngClass]="{'has-text-danger': this.controlHasError('terms') }">
-                        I agree to to nothing except for storing my data securely in a database on a server.
-                      </label>
+                        <input class="mt-1 mr-2" type="checkbox" formControlName="terms" name="terms" id="terms">
+                        <label for="terms" class="checkbox is-size-6"
+                            [ngClass]="{'has-text-danger': this.controlHasError('terms') }">
+                            I agree to to nothing except for storing my data securely in a database on a server.
+                        </label>
                     </div>
-                  </div>
+                </div>
 
 
                 <button (click)="this.onRegister()" class="button is-block is-fullwidth is-link mt-4"
@@ -83,7 +86,7 @@
 
                 <button [routerLink]="['/sign-in']" class="button is-block is-fullwidth" type="button">
                     Sign in
-                  </button>
+                </button>
             </form>
         </div>
     </div>
