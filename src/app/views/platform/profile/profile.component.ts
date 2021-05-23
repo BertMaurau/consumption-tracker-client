@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/providers/auth.service';
 import { CountryService } from 'src/app/core/providers/country.service';
 import { TimezoneService } from 'src/app/core/providers/timezone.service';
@@ -21,6 +22,8 @@ export class ProfileComponent implements OnInit {
   public isLoadingAvatar: boolean = false;
   public isLoading: boolean = false;
   public isSavedState: boolean = false;
+  public isHoveringAvatar: boolean = false;
+
   public hasSubmitted: boolean = false;
   public hasChanged: boolean = false;
 
@@ -30,6 +33,7 @@ export class ProfileComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
+    private router: Router,
     private $auth: AuthService,
     private $country: CountryService,
     private $timezone: TimezoneService,
@@ -134,7 +138,7 @@ export class ProfileComponent implements OnInit {
   }
 
   public onLogout(): void {
-
+    this.$auth.destroy().then(() => this.router.navigate(['/sign-in']));
   }
 
   public onChangeAvatar(): void {

@@ -1,8 +1,14 @@
-.avatar {
+.avatar, .avatar-hover {
     width: 128px;
     max-width: 128px;
     height: 128px;
     max-height: 128px;
+    cursor: pointer;
+}
+
+.avatar-hover {
+    position: absolute;
+    background: rgba(255,255,255, 0.4);
 }
 
 .details {

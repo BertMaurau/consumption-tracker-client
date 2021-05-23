@@ -10,11 +10,14 @@
 
     <section fxFlex="180px" fxFlex.lt-sm="100%" fxLayoutAlign.lt-sm="center center">
 
-        <section class="p-4" fxLayout="column" fxLayoutAlign="center center">
-            <img class="avatar" (click)="this.onChangeAvatar()" [src]="this.authUser.attributes.avatar">
-            <button (click)="this.onChangeAvatar()" class="button is-link is-inverted is-fullwidth is-small mt-2">
-                <span>Upload avatar</span>
-            </button>
+        <section class="p-4" fxLayout="column" fxLayoutAlign="center center" style="position: relative;" (click)="this.onChangeAvatar()" (mouseenter)="this.isHoveringAvatar = true" (mouseleave)="this.isHoveringAvatar = false">
+
+            <img class="avatar" [src]="this.authUser.attributes.avatar">
+
+            <div class="avatar-hover" fxLayout="column" fxLayoutAlign="center center" *ngIf="this.isHoveringAvatar">
+                <span class="icon"><i class="fas fa-camera fa-2x"></i></span>
+            </div>
+
         </section>
     </section>
 
@@ -169,11 +172,24 @@
                 <h2 fxFlex class="subtitle mb-0">Account</h2>
             </section>
 
-            <button class="button is-link is-inverted has-text-left">
+            <button disabled class="button is-link is-block is-inverted has-text-left mb-2">
+                <span class="icon">
+                    <i class="fas fa-key"></i>
+                </span>
                 <span>Change password</span>
             </button>
 
-            <button (click)="this.onLogout()" class="button is-link is-inverted has-text-left">
+            <button disabled class="button is-link is-block is-inverted has-text-left mb-2">
+                <span class="icon">
+                    <i class="fas fa-file-export"></i>
+                </span>
+                <span>Export data</span>
+            </button>
+
+            <button (click)="this.onLogout()" class="button is-link is-block is-inverted has-text-left mb-2">
+                <span class="icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </span>
                 <span>Logout</span>
             </button>
 
