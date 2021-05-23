@@ -11,6 +11,8 @@ import { StorageService } from './core/providers/storage.service';
 import { AuthGuardService } from './core/guards/auth-guard.service';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CountryService } from './core/providers/country.service';
+import { TimezoneService } from './core/providers/timezone.service';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppService,
     ServerService,
     StorageService,
+    CountryService,
+    TimezoneService,
   ],
   bootstrap: [AppComponent]
 })

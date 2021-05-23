@@ -1,7 +1,6 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -20,13 +19,15 @@ $consumption-tracker-warn: mat-palette($mat-red);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$consumption-tracker-theme: mat-light-theme((
-  color: (
-    primary: $consumption-tracker-primary,
-    accent: $consumption-tracker-accent,
-    warn: $consumption-tracker-warn,
+$consumption-tracker-theme: mat-light-theme(
+  (
+    color: (
+      primary: $consumption-tracker-primary,
+      accent: $consumption-tracker-accent,
+      warn: $consumption-tracker-warn,
+    ),
   )
-));
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -35,41 +36,62 @@ $consumption-tracker-theme: mat-light-theme((
 
 /* You can add global styles to this file, and also import other style files */
 
-
 .separator {
-    border-top: 1px solid #cbd2d6;
-    position: relative;
-    margin: 25px 0 5px;
-    text-align: center;
+  border-top: 1px solid #cbd2d6;
+  position: relative;
+  margin: 25px 0 5px;
+  text-align: center;
 
-    span {
-        background-color: #fff;
-        padding: 0 .5em;
-        position: relative;
-        color: #6c7378;
-        top: -.8em;
-    }
+  span {
+    background-color: #fff;
+    padding: 0 0.5em;
+    position: relative;
+    color: #6c7378;
+    top: -0.8em;
+  }
 }
 
 .notification {
-    padding: 0.72rem !important;
+  padding: 0.72rem !important;
 }
 
 .listmenu-item {
-    justify-content: flex-start;
-    border-bottom: 1px solid lightgrey !important;
-    margin-bottom: 12px;
-    padding: 24px;
+  justify-content: flex-start;
+  border-bottom: 1px solid lightgrey !important;
+  margin-bottom: 12px;
+  padding: 24px;
 
-    .icon {
-        margin-right: 12px;
-        font-size: 1.4em;
-    }
+  .icon {
+    margin-right: 12px;
+    font-size: 1.4em;
+  }
 }
 
 .avatar {
-    border-radius: 50%;
-    border: 1px solid lightgrey;
+  border-radius: 50%;
+  border: 1px solid lightgrey;
+}
+
+.force-hidden {
+  display: none !important;
+  height: 1px;
+  width: 1px;
+}
+
+.custom-dialog {
+  .dialog-header {
+    h1 {
+      margin-bottom: 0px;
+    }
+  }
+  .dialog-content {
+    min-width: 400px;
+    max-width: 512px;
+
+    .dialog-actions {
+      
+    }
+  }
 }
 
 /* Margin/Padding/.. helper classes */
@@ -85,16 +107,9 @@ $sizes: (
   ("2", $spacer * 0.5),
   ("3", $spacer),
   ("4", $spacer * 1.5),
-  ("5", $spacer * 3),
+  ("5", $spacer * 3)
 );
-$positions: (
-  ("t", "top"),
-  ("r", "right"),
-  ("b", "bottom"),
-  ("l", "left"),
-  ("x", "x"),
-  ("y", "y")
-);
+$positions: (("t", "top"), ("r", "right"), ("b", "bottom"), ("l", "left"), ("x", "x"), ("y", "y"));
 
 @function sizeValue($key, $value) {
   @if ($key == "0") {
@@ -110,37 +125,43 @@ $positions: (
   $sizeKey: nth($size, 1);
   $sizeValue: nth($size, 2);
   .#{$marginKey}#{$separator}#{$sizeKey} {
-    margin: sizeValue($sizeKey, $sizeValue);
+    margin: sizeValue($sizeKey, $sizeValue) !important;
   }
   .#{$paddingKey}#{$separator}#{$sizeKey} {
-    padding: sizeValue($sizeKey, $sizeValue);
+    padding: sizeValue($sizeKey, $sizeValue) !important;
   }
   @each $position in $positions {
     $posKey: nth($position, 1);
     $posValue: nth($position, 2);
     .#{$marginKey}#{$posKey}#{$separator}#{$sizeKey} {
       @if $posValue == "x" {
-        margin-left: sizeValue($sizeKey, $sizeValue);
-        margin-right: sizeValue($sizeKey, $sizeValue);
+        margin-left: sizeValue($sizeKey, $sizeValue) !important;
+        margin-right: sizeValue($sizeKey, $sizeValue) !important;
       } @else if $posValue == "y" {
-        margin-top: sizeValue($sizeKey, $sizeValue);
-        margin-bottom: sizeValue($sizeKey, $sizeValue);
+        margin-top: sizeValue($sizeKey, $sizeValue) !important;
+        margin-bottom: sizeValue($sizeKey, $sizeValue) !important;
       } @else {
-        margin-#{$posValue}: sizeValue($sizeKey, $sizeValue);
+        margin-#{$posValue}: sizeValue($sizeKey, $sizeValue) !important;
       }
     }
     .#{$paddingKey}#{$posKey}#{$separator}#{$sizeKey} {
       @if $posValue == "x" {
-        padding-left: sizeValue($sizeKey, $sizeValue);
-        padding-right: sizeValue($sizeKey, $sizeValue);
+        padding-left: sizeValue($sizeKey, $sizeValue) !important;
+        padding-right: sizeValue($sizeKey, $sizeValue) !important;
       } @else if $posValue == "y" {
-        padding-top: sizeValue($sizeKey, $sizeValue);
-        padding-bottom: sizeValue($sizeKey, $sizeValue);
+        padding-top: sizeValue($sizeKey, $sizeValue) !important;
+        padding-bottom: sizeValue($sizeKey, $sizeValue) !important;
       } @else {
-        padding-#{$posValue}: sizeValue($sizeKey, $sizeValue);
+        padding-#{$posValue}: sizeValue($sizeKey, $sizeValue) !important;
       }
     }
   }
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

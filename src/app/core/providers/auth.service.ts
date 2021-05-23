@@ -125,7 +125,7 @@ export class AuthService {
 
     return new Promise<any>((resolve, reject) => {
       // get users from API
-      this.$server.patch(`/me`, null, payload).subscribe((user: any) => {
+      this.$server.patch(`/users`, this.userId, payload).subscribe((user: any) => {
         if (user) {
 
           delete user.attributes;
@@ -150,15 +150,15 @@ export class AuthService {
 
     return new Promise<any>((resolve, reject) => {
       // get users from API
-      this.$server.post(`/avatar`, { base64_string: baseString }).subscribe((user: any) => {
-        if (user) {
+      this.$server.post(`/users/${this.userId}/avatar`, { base64_string: baseString }).subscribe((res: any) => {
+        if (res) {
 
-          this.authUserData.avatar = user.avatar;
+          this.authUserData.attributes.avatar = res.avatar;
 
           // trigger the subject
           this.authUser.next(this.authUserData);
 
-          resolve(user);
+          resolve(this.authUserData);
         }
       }, (err: HttpErrorResponse) => {
         reject(err);
