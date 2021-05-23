@@ -1,27 +1,46 @@
 <section class="section">
     <h1 class="title">Hi, {{ this.authUser.first_name || '' }}</h1>
+    <h2 class="subtitle">
+        Here's your consumption summary for the last <strong>10 days</strong>.
+    </h2>
 </section>
 
 <section fxLayout="row">
 
     <!-- Chart and stuff -->
-    <section fxFlex="60%">
+    <section fxFlex="100%">
+
+        <div class="chart-container" #chartContainerRef>
+            <ngx-charts-area-chart-stacked [legend]="true" [xAxis]="false" [yAxis]="true" [timeline]="true"
+                [view]="[chartContainerRef.offsetWidth, chartContainerRef.offsetHeight]" [results]="this.chartData">
+            </ngx-charts-area-chart-stacked>
+        </div>
 
     </section>
+</section>
 
-    <!-- Right side -->
-    <section fxFlex="40%">
+<section class="section">
+    <h1 class="title">Activity</h1>
+    <h2 class="subtitle">
+        List of your latest consumptions.
+    </h2>
+</section>
 
-        <!-- Action buttons -->
-        <section fxLayout="row">
+<section fxLayout="column">
 
-        </section>
+    <ng-container *ngFor="let consumption of this.consumptionList.results; let i = index">
 
-        <!-- Recent consumptions -->
-        <section fxLayout="column">
+        <!-- Display header -->
+        <ng-container
+            *ngIf="i === 0 || (i > 0 && (consumption.consumed_at.date | amFromUtc | amLocal | amDateFormat:'YYYYDDMM') !== (this.consumptionList.results[i - 1].consumed_at.date | amFromUtc | amLocal | amDateFormat:'YYYYDDMM'))">
+            <h2 class="activity-date-group">
+                {{ consumption.consumed_at.date | amFromUtc | amLocal | amDateFormat:'YYYYDDMM' }}
+            </h2>
+        </ng-container>
 
-        </section>
+        <div class="consumption-item" fxLayout="row">
+            <span>Consumed {{ consumption.volume }} of {{ consumption.item_id }} on {{ consumption.consumed_at.date | amFromUtc | amLocal | amDateFormat:'h:mm:ss' }}</span>
+        </div>
 
-    </section>
-
+    </ng-container>
 </section>

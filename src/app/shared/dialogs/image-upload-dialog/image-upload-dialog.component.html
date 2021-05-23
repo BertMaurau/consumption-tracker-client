@@ -10,7 +10,7 @@
 
 </div>
 
-<mat-dialog-content class="dialog-content mt-4 mb-4" fxLayout="column" fxLayoutAlign="center center">
+<mat-dialog-content class="dialog-content mt-4" fxLayout="column" fxLayoutAlign="center center">
 
     <input #fileSelect class="force-hidden" [(ngModel)]="this.selectedFile" type="file" accept="image/*"
         (change)="this.fileChangeEvent($event)" />
@@ -29,10 +29,11 @@
             [aspectRatio]="1 / 1" format="png" (imageCropped)="this.imageCropped($event)"></image-cropper>
     </ng-container>
 
+    <div class="dialog-actions mt-4" fxLayout="row" fxLayoutAlign="flex-end">
+        <button *ngIf="this.newImage" [ngClass]="{'is-loading' : this.isLoading }"
+        [disabled]="!this.newImage || this.isLoading" class="button is-link" (click)="this.onClose()">Upload
+        image</button>
+    </div>
+
 </mat-dialog-content>
 
-<mat-dialog-actions align="end" class="dialog-actions">
-    <button *ngIf="this.newImage" [ngClass]="{'is-loading' : this.isLoading }"
-        [disabled]="!this.newImage || this.isLoading" class="button is-link mb-2" (click)="this.onClose()">Upload
-        image</button>
-</mat-dialog-actions>

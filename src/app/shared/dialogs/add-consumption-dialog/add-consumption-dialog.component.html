@@ -1,0 +1,63 @@
+<div mat-dialog-header class="dialog-header" fxLayout="row" fxLayoutAlign="flex-start center">
+
+    <h1 fxFlex class="title is-4">Add new</h1>
+
+    <button class="button is-link is-inverted is-normal" (click)="this.onClose()" matTooltip="Close">
+        <span class="icon is-small">
+            <i class="fas fa-times"></i>
+        </span>
+    </button>
+
+</div>
+
+<mat-dialog-content class="dialog-content mt-4" fxLayout="column" fxLayoutAlign="center center">
+
+    <form [formGroup]="this.formConsumption" class="mt-4">
+
+        <div *ngIf="this.error" class="notification is-danger is-light mt-4">
+            <span class="is-size-7">{{ this.error }}</span>
+        </div>
+
+        <div class="field">
+            <div class="control has-icons-left has-icons-right">
+                <select name="item_id" formControlName="item_id">
+                    <optgroup label="Alcoholic drinks"><option value="9">Beer</option><option value="10">Liquor</option><option value="8">Wine</option></optgroup><optgroup label="Hot drinks"><option value="3">Coffee</option><option value="5">Hot Chocolate</option><option value="4">Tea</option></optgroup><optgroup label="Non-alcoholic drinks"><option value="6">Juice</option><option value="2">Milk</option><option value="7">Soft Drink</option><option value="1">Water</option></optgroup><optgroup label="Other"><option value="11">Other</option></optgroup>            </select>
+                <br><br>
+            </div>
+            <p *ngIf="this.controlHasError('item_id') && this.formConsumption.get('item_id').hasError('required')"
+                class="help is-danger has-text-left">Oops! Item is required</p>
+        </div>
+
+        <div class="field">
+            <div class="control has-icons-left has-icons-right">
+                <input class="input" [ngClass]="{'is-danger': this.controlHasError('volume') }"
+                    type="number" formControlName="volume" name="volume" placeholder="Volume" required />
+                <span class="icon is-left">
+                    <i class="fas fa-glass-whiskey"></i>
+                </span>
+            </div>
+            <p *ngIf="this.controlHasError('volume') && this.formConsumption.get('volume').hasError('required')"
+                class="help is-danger has-text-left">Oops! Volume is required</p>
+        </div>
+
+        <div class="field">
+            <div class="control has-icons-left has-icons-right">
+                <input class="input" [ngClass]="{'is-danger': this.controlHasError('consumed_at') }"
+                    type="datetime-local" formControlName="consumed_at" name="consumed_at" placeholder="Consumed at" required />
+                <span class="icon is-left">
+                    <i class="fas fa-clock"></i>
+                </span>
+            </div>
+            <p *ngIf="this.controlHasError('consumed_at') && this.formConsumption.get('consumed_at').hasError('required')"
+                class="help is-danger has-text-left">Oops! Consumed is required</p>
+        </div>
+
+    </form>
+
+    <div class="dialog-actions mt-4" fxLayout="row" fxLayoutAlign="flex-end">
+        <button [ngClass]="{'is-loading' : this.isLoading }"
+        [disabled]="this.isLoading" class="button is-link" (click)="this.onAdd()">Add</button>
+    </div>
+
+</mat-dialog-content>
+

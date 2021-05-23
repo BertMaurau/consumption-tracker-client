@@ -87,10 +87,9 @@ $consumption-tracker-theme: mat.define-light-theme(
   .dialog-content {
     min-width: 400px;
     max-width: 512px;
-
-    .dialog-actions {
-      
-    }
+  }
+  .dialog-actions {
+    width: 100%;
   }
 }
 

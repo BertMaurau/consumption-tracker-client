@@ -8,6 +8,9 @@ import { ImageUploadDialogComponent } from './dialogs/image-upload-dialog/image-
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { DndModule } from 'ngx-drag-drop';
 import { FilterPipe } from '../core/pipes/filter.pipe';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { MomentModule } from 'ngx-moment';
+import { AddConsumptionDialogComponent } from './dialogs/add-consumption-dialog/add-consumption-dialog.component';
 
 const modules = [
   CommonModule,
@@ -18,12 +21,15 @@ const modules = [
   MatTooltipModule,
   ImageCropperModule,
   DndModule,
+  NgxChartsModule,
+  MomentModule,
 ];
 
 @NgModule({
   declarations: [
     ImageUploadDialogComponent,
     FilterPipe,
+    AddConsumptionDialogComponent,
   ],
   imports: [
     ...modules,
@@ -33,7 +39,8 @@ const modules = [
     FilterPipe,
   ],
   entryComponents: [
-    ImageUploadDialogComponent
+    ImageUploadDialogComponent,
+    AddConsumptionDialogComponent
   ],
 })
 export class SharedModule { }

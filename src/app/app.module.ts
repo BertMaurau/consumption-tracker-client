@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CountryService } from './core/providers/country.service';
 import { TimezoneService } from './core/providers/timezone.service';
+import { ConsumptionsComponent } from './views/platform/consumptions/consumptions.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { TimezoneService } from './core/providers/timezone.service';
     StorageService,
     CountryService,
     TimezoneService,
+    ConsumptionsComponent,
   ],
   bootstrap: [AppComponent]
 })
