@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/core/providers/auth.service';
 import * as moment from 'moment';
 import { ConsumptionsService } from 'src/app/core/providers/consumptions.service';
+import { ItemService } from 'src/app/core/providers/item.service';
+import { combineLatest } from 'rxjs/internal/observable/combineLatest';
+import { curveBasis } from 'd3-shape';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -12,11 +16,12 @@ export class DashboardComponent implements OnInit {
 
   public authUser: any = {};
 
-  public chartData: Array<any> = [];
+  public chartData: Array<any> = null;
   public chartPeriod = 'custom';
   public chartDateStep: number = 1;
   public chartDateFrom: moment.Moment;
   public chartDateUntil: moment.Moment;
+  public chartCurve: any = curveBasis;
 
   // chart data query
   public chartGroupBy: any = { key: 'day', display: 'Daily' };
@@ -39,27 +44,52 @@ export class DashboardComponent implements OnInit {
   public consumptionList: any = {
     take: 50,
     skip: 0,
-    query: {orderBy: '-consumed_at'},
+    query: { orderBy: '-consumed_at' },
     results: [],
   };
+
+  public summary: any = {
+    total: 0,
+    categories: [],
+  }
+
+  public itemsMap: Map<number, any> = new Map();
 
   constructor(
     private $auth: AuthService,
     private $consumptions: ConsumptionsService,
-  ) { 
+    private $item: ItemService,
+  ) {
     this.$auth.authUser.subscribe((authUser: any) => {
       this.authUser = authUser;
     });
-
-    this.$consumptions.consumptionsList.subscribe((userConsumptions: Array<any>) => {
-      this.consumptionList.results = userConsumptions;
+    this.$consumptions.summary.subscribe((summary: any) => {
+      this.summary = summary;
     })
+
+    combineLatest([this.$consumptions.consumptionsList, this.$item.items]).subscribe(([consumptions, items]) => {
+
+        // build item map
+        const itemMap = new Map();
+        items.forEach((item: any) => {
+          itemMap.set(item.id, item);
+        });
+
+        // process consumptions
+        this.consumptionList.results = consumptions.map((consumption: any) => {
+          consumption.attributes.item = itemMap.get(consumption.item_id);
+          return consumption;
+        })
+      }
+    );
   }
 
   ngOnInit() {
     this.onChartGroupByChanged(this.chartGroupBy.key);
 
     this._getConsumptions();
+    this._getSummary();
+    this._getItems();
   }
 
   public onChartGroupByChanged(groupBy: string, step?: number): void {
@@ -89,6 +119,24 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  public getIconForCategoryId(categoryId: number): string {
+    let icon = 'fa-glass-whiskey';
+    switch (categoryId) {
+      case 2:
+        icon = 'fa-cocktail';
+        break;
+      case 3:
+        icon = 'fa-mug-hot';
+        break;
+      case 4:
+        icon = 'fa-glass-whiskey';
+        break;
+      default:
+        break;
+    }
+    return icon;
+  }
+
   private _getChart(group: string, from: string, until: string) {
     const cacheKey = `${from}-${until}-${group}`;
     this.$consumptions.getChart(cacheKey, from, until, group).then((chartData: Array<any>) => {
@@ -96,8 +144,16 @@ export class DashboardComponent implements OnInit {
     })
   }
 
+  private _getItems() {
+    this.$item.get().then(() => {})
+  }
+
+  private _getSummary() {
+    this.$consumptions.getSummary().then(() => {})
+  }
+
   private _getConsumptions(): void {
-    this.$consumptions.get(this.consumptionList.query, this.consumptionList.take,this.consumptionList.skip).then(() => {});
+    this.$consumptions.get(this.consumptionList.query, this.consumptionList.take, this.consumptionList.skip).then(() => { });
   }
 
 }

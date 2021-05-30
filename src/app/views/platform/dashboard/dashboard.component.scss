@@ -2,3 +2,45 @@
     width: 100%;
     min-height: 320px;
 }
+
+.summary-container {
+    border-radius: 12px;
+    width: 100%;
+    .category-item {
+        section {
+            width: 100%;
+
+            .icon {
+                width: 32px;
+                height: 32px;
+            }
+
+            .item-item {
+                align-items: center;
+            }
+        }
+        @media screen and (min-width: 768px) {
+            &:not(:last-child) {
+                border-right: 1px solid lightgrey;
+            }
+        }
+    }
+}
+
+.consumption-container {
+    .consumption-item {
+        align-items: center;
+    }
+}
+
+::ng-deep {
+    .legend-title {
+        display: none;
+    }
+    .horizontal-legend {
+        text-align: center !important;
+    }
+    .chart-legend .legend-labels {
+        background: none !important;
+    }
+}

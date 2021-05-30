@@ -9,6 +9,9 @@ import * as moment from 'moment';
 })
 export class ConsumptionsService {
 
+  public summary: ReplaySubject<any> = new ReplaySubject(1);
+  private summaryData: any = null;
+
   public consumptionsList: ReplaySubject<Array<any>> = new ReplaySubject(1);
   private consumptionsListData: Array<any> = null;
 
@@ -53,11 +56,34 @@ export class ConsumptionsService {
     });
   }
 
+  public getSummary(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      if (this.summaryData) {
+        resolve(this.summaryData);
+        return;
+      }
+      this.$server.get(`/my/consumptions?display=summary`).subscribe((summary: any) => {
+
+        if (summary) {
+
+          this.summaryData = summary;
+
+          // trigger the subject
+          this.summary.next(this.summaryData);
+
+          resolve(this.summaryData);
+        }
+      }, (err: HttpErrorResponse) => {
+        reject(err);
+      });
+    });
+  }
+
   public getChart(cacheKey: string, from: string, until: string, group: string = 'day'): Promise<Array<any>> {
     return new Promise<any>((resolve, reject) => {
 
       if (this.consumptionsChartData.hasOwnProperty(cacheKey)) {
-        resolve(this.consumptionsChartData[cacheKey]);
+        resolve(this.consumptionsChartData);
         return;
       }
       this.$server.get(`/my/consumptions?display=chart&period=custom&group=${group}&from=${from}&until=${until}`).subscribe((chartData: Array<any>) => {

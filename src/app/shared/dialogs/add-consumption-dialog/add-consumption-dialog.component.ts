@@ -31,7 +31,7 @@ export class AddConsumptionDialogComponent implements OnInit {
     this.formConsumption = this.formBuilder.group({
       item_id: [1, [Validators.required]],
       volume: [150, [Validators.required]],
-      consumed_at: [Date.now(), [Validators.required]],
+      consumed_at: [new Date(), [Validators.required]],
       notes: [null, []],
     });
   }

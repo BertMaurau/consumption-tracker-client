@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CountryService } from './core/providers/country.service';
 import { TimezoneService } from './core/providers/timezone.service';
 import { ConsumptionsComponent } from './views/platform/consumptions/consumptions.component';
+import { ItemService } from './core/providers/item.service';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ConsumptionsComponent } from './views/platform/consumptions/consumption
     CountryService,
     TimezoneService,
     ConsumptionsComponent,
+    ItemService,
   ],
   bootstrap: [AppComponent]
 })
