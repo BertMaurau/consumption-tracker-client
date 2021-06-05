@@ -144,55 +144,57 @@ export class ConsumptionsService {
 
       const cacheKeyParts = key.split('#');
 
-      let chartData = <Array<any>>value;
+      let chartData: Array<any> = <Array<any>>value;
       let dateFormatConsumed: string = null;
+      let itemSeries: Array<any> = [];
+      let seriesFormat: string;
 
       // check the grouping
       switch (cacheKeyParts[2]) {
         case 'day':
-
-          // create the label for day of consumption (consumed at is UTC time)
-          dateFormatConsumed = moment.utc(userConsumption.consumed_at.date).local().format('YYYY-MM-DD');
-
-          // check if there is already a series listed for that item
-          const itemSeries = chartData.find((item: any) => item.item_id === userConsumption.item_id);
-          if (!itemSeries) {
-
-            // no series yet, so we need to generate/build a full one
-            const dateEmptySeries: Array<any> = [];
-
-            // build the series' range
-            let dateFrom = moment(cacheKeyParts[0]).format('YYYY-MM-DD');
-            let dateUntil = moment(cacheKeyParts[1]).format('YYYY-MM-DD');
-
-            // creating JS date objects
-            var start = new Date(dateFrom);
-            var end = new Date(dateUntil);
-
-            // logic for getting rest of the dates between two dates("FromDate" to "EndDate")
-            while (start < end) {
-              dateEmptySeries.push({ name: moment(start).format('YYYY-MM-DD'), value: 0 });
-              const newDate = start.setDate(start.getDate() + 1);
-              start = new Date(newDate);
-            }
-
-            // add the item to the series with empty values (gets added later)
-            chartData.push({
-              item_id: item.id,
-              name: item.description,
-              series: dateEmptySeries,
-            });
-          }
-
+          seriesFormat = 'YYYY-MM-DD';
           break;
         case 'week':
-
+          seriesFormat = 'YYYY-[W]WW';
           break;
         case 'month':
-
+          seriesFormat = 'YYYY-MM';
           break;
         default:
           break;
+      }
+
+      // create the label for week of consumption (consumed at is UTC time)
+      dateFormatConsumed = moment.utc(userConsumption.consumed_at.date).local().format(seriesFormat);
+
+      // check if there is already a series listed for that item
+      itemSeries = chartData.find((item: any) => item.item_id === userConsumption.item_id);
+      if (!itemSeries) {
+
+        // no series yet, so we need to generate/build a full one
+        const dateEmptySeries: Array<any> = [];
+
+        // build the series' range
+        let dateFrom = moment(cacheKeyParts[0]);
+        let dateUntil = moment(cacheKeyParts[1]);
+        let seriesUnit: moment.unitOfTime.DurationConstructor = <moment.unitOfTime.DurationConstructor>cacheKeyParts[2];
+
+        // logic for getting rest of the dates between two dates("FromDate" to "EndDate")
+        while (dateFrom.isSameOrBefore(dateUntil)) {
+          // push series to list
+          dateEmptySeries.push({ name: dateFrom.format(seriesFormat), value: 0 });
+
+          // step to next series
+          dateFrom = dateFrom.add(1, seriesUnit);
+        }
+
+        // add the item to the series with empty values (gets added later)
+        chartData.push({
+          name: item.description,
+          item_id: item.id,
+          series: dateEmptySeries,
+        });
+
       }
 
       // reached the part where we update the series value
