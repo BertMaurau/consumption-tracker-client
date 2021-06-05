@@ -1,0 +1,13 @@
+form {
+    max-width: 100%;
+}
+
+.suggestions {
+    max-width: 100%;
+    overflow-x: auto;
+
+    .suggestion-button {
+        height: auto;
+        align-items: flex-start;
+    }
+}

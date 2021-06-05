@@ -5,6 +5,7 @@ import { ConsumptionsService } from 'src/app/core/providers/consumptions.service
 import { ImageUploadDialogComponent } from '../image-upload-dialog/image-upload-dialog.component';
 import * as moment from 'moment';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ItemService } from 'src/app/core/providers/item.service';
 
 @Component({
   selector: 'app-add-consumption-dialog',
@@ -22,21 +23,36 @@ export class AddConsumptionDialogComponent implements OnInit {
 
   public items: Array<any> = [];
 
+  public suggestedConsumptions: Array<any> = [];
+
   constructor(
     private formBuilder: FormBuilder,
     private dialogRef: MatDialogRef<ImageUploadDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: any,
     private $consumption: ConsumptionsService,
+    private $item: ItemService,
+    @Inject(MAT_DIALOG_DATA) private data: any,
   ) {
+    this.$item.items.subscribe((items: Array<any>) => {
+      this.items = items;
+
+      // get suggestions and add the item as attribute
+      this.suggestedConsumptions = this.$consumption.getSuggested().map((suggestion: any) => {
+        suggestion.item = this.items.find((item: any) => item.id === suggestion.item_id);
+        return suggestion;
+      });
+    })
+
     this.formConsumption = this.formBuilder.group({
       item_id: [1, [Validators.required]],
       volume: [150, [Validators.required]],
-      consumed_at: [new Date(), [Validators.required]],
+      consumed_at: [null, [Validators.required]],
       notes: [null, []],
     });
   }
 
   ngOnInit(): void {
+    // set the default time
+    this.formConsumption.patchValue({consumed_at: moment().format('YYYY-MM-DD[T]HH:mm')});
   }
 
   /**
@@ -51,7 +67,7 @@ export class AddConsumptionDialogComponent implements OnInit {
    * @param {string} controlName 
    * @returns {boolean}
    */
-   public controlHasError(controlName: string): boolean {
+  public controlHasError(controlName: string): boolean {
     // check if the user already touched the fields
     return !!(this.hasSubmitted && this.formConsumption.get(controlName).invalid && (this.formConsumption.get(controlName).dirty || this.formConsumption.get(controlName).touched) && this.formConsumption.get(controlName).errors);
   }
@@ -65,7 +81,24 @@ export class AddConsumptionDialogComponent implements OnInit {
     this.formConsumption.get(controlName).setErrors(null);
   }
 
-  public onAdd() {
+  /**
+   * Handle the selection of a suggestion
+   * @param {any} suggestion The clicked suggestion
+   */
+  public onSuggestionSelected(suggestion: any): void {
+    this.formConsumption.patchValue({
+      volume: suggestion.volume,
+      item_id: suggestion.item_id,
+    });
+
+    this.onAdd();
+  }
+
+  /**
+   * Add the consumption
+   * @returns {void}
+   */
+  public onAdd(): void {
 
     this.error = null;
 
@@ -81,12 +114,17 @@ export class AddConsumptionDialogComponent implements OnInit {
 
     this.isLoading = true;
 
+    // build the payload
     const payload = this.formConsumption.value;
-
     const consumedAt = moment(payload.consumed_at).utc().format();
 
-    this.$consumption.create(payload.item_id, payload.volume, consumedAt, payload.notes).then((con: any) => {
+    this.$consumption.create(payload.item_id, payload.volume, consumedAt, payload.notes).then((userConsumption: any) => {
+
+      // do stuff?
+
+      // close the dialog
       this.onClose();
+
     }, (err: HttpErrorResponse) => {
       this.isLoading = false;
       this.error = err.error.message;

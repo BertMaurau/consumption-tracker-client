@@ -10,58 +10,92 @@
 
 </div>
 
-<mat-dialog-content class="dialog-content mt-4" fxLayout="column" fxLayoutAlign="center center">
+<mat-dialog-content class="dialog-content mt-4" fxLayout="column">
 
-    <form [formGroup]="this.formConsumption" class="mt-4 mb-4 is-fullwidth">
+    <form fxFlex [formGroup]="this.formConsumption" class="mt-4 mb-4 is-fullwidth">
 
         <div *ngIf="this.error" class="notification is-danger is-light mt-4">
             <span class="is-size-7">{{ this.error }}</span>
         </div>
 
-        <div class="field">
-            <div class="control has-icons-left has-icons-right">
-                <div class="select is-fullwidth">
-                    <select name="item_id" formControlName="item_id">
-                        <optgroup label="Alcoholic drinks">
-                            <option value="9">Beer</option>
-                            <option value="10">Liquor</option>
-                            <option value="8">Wine</option>
-                        </optgroup>
-                        <optgroup label="Hot drinks">
-                            <option value="3">Coffee</option>
-                            <option value="5">Hot Chocolate</option>
-                            <option value="4">Tea</option>
-                        </optgroup>
-                        <optgroup label="Non-alcoholic drinks">
-                            <option value="6">Juice</option>
-                            <option value="2">Milk</option>
-                            <option value="7">Soft Drink</option>
-                            <option value="1">Water</option>
-                        </optgroup>
-                        <!-- <optgroup label="Other">
-                            <option value="11">Other</option>
-                        </optgroup> -->
-                    </select>
-                </div>
-                <span class="icon is-left">
-                    <i class="fas fa-tint"></i>
-                </span>
-            </div>
-            <p *ngIf="this.controlHasError('item_id') && this.formConsumption.get('item_id').hasError('required')"
-                class="help is-danger has-text-left">Oops! Item is required</p>
-        </div>
+        <!-- List of suggestions -->
+        <ng-container *ngIf="this.suggestedConsumptions.length > 0">
+            <span class="has-text-weight-medium">Quick consume (based on your recent activity)</span>
 
-        <div class="field">
-            <div class="control has-icons-left has-icons-right">
-                <input class="input" [ngClass]="{'is-danger': this.controlHasError('volume') }" type="number"
-                    formControlName="volume" name="volume" placeholder="Volume" required />
-                <span class="icon is-left">
-                    <i class="fas fa-glass-whiskey"></i>
-                </span>
+            <section class="suggestions pt-2 pb-3 mb-1 mt-1" fxLayout="row">
+                <button class="button suggestion-button is-light mr-2"
+                    *ngFor="let suggestion of this.suggestedConsumptions"
+                    (click)="this.onSuggestionSelected(suggestion)">
+
+                    <span class="icon has-text-link">
+                        <i class="fas {{ suggestion.item.item_category_id | categoryIcon }} fa-1x"></i>
+                    </span>
+                    <span class="has-text-weight-medium">{{ suggestion.item.description }}</span>
+
+                    <!-- <section fxLayout="column">
+                        <span class="has-text-weight-medium">{{ suggestion.item.description }}</span>
+                        <small>{{ suggestion.volume }}</small>
+                    </section> -->
+
+                </button>
+            </section>
+
+            <div class="separator"><span>or</span></div>
+
+        </ng-container>
+
+        <!-- Item/Volume selection -->
+        <section class="mb-2" fxLayout="row" fxLayoutAlign="space-between">
+
+            <div class="field" fxFlex="65%">
+                <span class="has-text-weight-medium">Beverage</span>
+                <div class="control has-icons-left has-icons-right">
+                    <div class="select is-fullwidth">
+                        <select name="item_id" formControlName="item_id">
+                            <optgroup label="Alcoholic drinks">
+                                <option *ngFor="let item of this.items | filter:'item_category_id':2" [value]="item.id">
+                                    {{
+                                    item.description }}</option>
+                            </optgroup>
+                            <optgroup label="Hot drinks">
+                                <option *ngFor="let item of this.items | filter:'item_category_id':3" [value]="item.id">
+                                    {{
+                                    item.description }}</option>
+                            </optgroup>
+                            <optgroup label="Non-alcoholic drinks">
+                                <option *ngFor="let item of this.items | filter:'item_category_id':1" [value]="item.id">
+                                    {{
+                                    item.description }}</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <span class="icon is-left">
+                        <i class="fas fa-tint"></i>
+                    </span>
+                </div>
+                <p *ngIf="this.controlHasError('item_id') && this.formConsumption.get('item_id').hasError('required')"
+                    class="help is-danger has-text-left">Oops! Item is required</p>
             </div>
-            <p *ngIf="this.controlHasError('volume') && this.formConsumption.get('volume').hasError('required')"
-                class="help is-danger has-text-left">Oops! Volume is required</p>
-        </div>
+
+            <div class="field" fxFlex="30%">
+                <span class="has-text-weight-medium">Volume</span>
+                <div class="control has-icons-left has-icons-right">
+                    <input class="input" [ngClass]="{'is-danger': this.controlHasError('volume') }" type="number"
+                        formControlName="volume" name="volume" placeholder="Volume" required />
+                    <span class="icon is-left">
+                        <i class="fas fa-glass-whiskey"></i>
+                    </span>
+                </div>
+                <p *ngIf="this.controlHasError('volume') && this.formConsumption.get('volume').hasError('required')"
+                    class="help is-danger has-text-left">Oops! Volume is required</p>
+            </div>
+
+
+        </section>
+
+        <!-- Consumed at input -->
+
+        <span class="has-text-weight-medium">Consumed at</span>
 
         <div class="field">
             <div class="control has-icons-left has-icons-right">
@@ -80,7 +114,7 @@
 
     <div class="dialog-actions mt-4 is-fullwidth" fxLayout="row" fxLayoutAlign="flex-end">
         <button [ngClass]="{'is-loading' : this.isLoading }" [disabled]="this.isLoading" class="button is-link"
-            (click)="this.onAdd()">Add</button>
+            (click)="this.onAdd()">Add consumption</button>
     </div>
 
 </mat-dialog-content>

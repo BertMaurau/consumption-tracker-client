@@ -32,6 +32,58 @@ export class ConsumptionsService {
     })
   }
 
+  /**
+   * Get list of suggested items and their volume based on recent consumptions
+   * @returns {Array<any>} The list of items and their volume
+   */
+  public getSuggested(): Array<any> {
+
+    let mapConsumptions: any = {};
+
+    this.consumptionsListData.forEach((userConsumption: any) => {
+      const itemId: number = userConsumption.item_id;
+      const volume: number = userConsumption.volume;
+
+      if (!mapConsumptions.hasOwnProperty(itemId)) {
+        mapConsumptions[itemId] = {
+          item_id: itemId,
+          occurrences: 0,
+          volumes: {}
+        }
+      }
+
+      // increase occurrences
+      mapConsumptions[itemId].occurrences += 1;
+
+      // add volume to the list with times of occurrences
+      if (mapConsumptions[itemId].volumes.hasOwnProperty(volume)) {
+        mapConsumptions[itemId].volumes[volume] += 1;
+      } else {
+        mapConsumptions[itemId].volumes[volume] = 1;
+      }
+    })
+
+    // strip "map"
+    mapConsumptions = Object.values(mapConsumptions);
+
+    // sort on occurrences
+    mapConsumptions.sort((a: any, b: any) => b.occurrences - a.occurrences);
+
+    // get the most used volume as recommended
+    mapConsumptions = mapConsumptions.map((item: any) => {
+
+      // get the volume with most occurrences
+      const popularVolume = Object.keys(item.volumes).sort((a: any, b: any) => item.volumes[b] - item.volumes[a])[0]
+
+      return {
+        item_id: item.item_id,
+        volume: parseInt(popularVolume),
+      }
+    });
+
+    return mapConsumptions;
+  }
+
 
   /**
    * Get the summary of the User's consumptions
