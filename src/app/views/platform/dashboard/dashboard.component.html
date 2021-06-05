@@ -33,7 +33,7 @@
                     <section fxLayout="row">
 
                         <span class="icon m-2 has-text-link">
-                            <i class="fas {{ this.getIconForCategoryId(category.id) }} fa-2x"></i>
+                            <i class="fas {{ category.id | categoryIcon }} fa-2x"></i>
                         </span>
 
                         <!-- Items list -->
@@ -89,7 +89,7 @@
             <div class="consumption-item" fxLayout="row">
 
                 <span class="icon mr-4 m-2 has-text-link">
-                    <i class="fas {{ this.getIconForCategoryId(consumption.attributes.item.item_category_id) }} fa-1x"></i>
+                    <i class="fas {{ consumption.attributes.item.item_category_id | categoryIcon }} fa-1x"></i>
                 </span>
 
                 <span>

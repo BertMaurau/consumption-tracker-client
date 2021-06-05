@@ -127,24 +127,6 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  public getIconForCategoryId(categoryId: number): string {
-    let icon = 'fa-glass-whiskey';
-    switch (categoryId) {
-      case 2:
-        icon = 'fa-cocktail';
-        break;
-      case 3:
-        icon = 'fa-mug-hot';
-        break;
-      case 4:
-        icon = 'fa-glass-whiskey';
-        break;
-      default:
-        break;
-    }
-    return icon;
-  }
-
   private _getChart(group: string, from: string, until: string) {
     this.chartDataCacheKey = `${from}#${until}#${group}`;
     this.$consumptions.getChart(this.chartDataCacheKey, from, until, group).then(() => {})
