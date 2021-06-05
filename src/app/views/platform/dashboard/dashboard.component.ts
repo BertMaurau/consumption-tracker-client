@@ -6,7 +6,6 @@ import { ItemService } from 'src/app/core/providers/item.service';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { curveBasis } from 'd3-shape';
 
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -23,9 +22,12 @@ export class DashboardComponent implements OnInit {
   public chartDateUntil: moment.Moment;
   public chartCurve: any = curveBasis;
 
+  public chartDataCacheKey: string = null;
+
   // chart data query
   public chartGroupBy: any = { key: 'day', display: 'Daily' };
 
+  // chart grouping options
   public groupOptions: Array<any> = [
     {
       key: 'day',
@@ -41,6 +43,7 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
+  // holds the list of the recent consumptions
   public consumptionList: any = {
     take: 50,
     skip: 0,
@@ -48,11 +51,13 @@ export class DashboardComponent implements OnInit {
     results: [],
   };
 
+  // basic summary item
   public summary: any = {
     total: 0,
     categories: [],
   }
 
+  // mapped items from the ID -> the item
   public itemsMap: Map<number, any> = new Map();
 
   constructor(
@@ -65,6 +70,9 @@ export class DashboardComponent implements OnInit {
     });
     this.$consumptions.summary.subscribe((summary: any) => {
       this.summary = summary;
+    })
+    this.$consumptions.consumptionsChart.subscribe((chartData: Array<any>) => {
+      this.chartData = chartData[this.chartDataCacheKey];
     })
 
     combineLatest([this.$consumptions.consumptionsList, this.$item.items]).subscribe(([consumptions, items]) => {
@@ -138,10 +146,8 @@ export class DashboardComponent implements OnInit {
   }
 
   private _getChart(group: string, from: string, until: string) {
-    const cacheKey = `${from}-${until}-${group}`;
-    this.$consumptions.getChart(cacheKey, from, until, group).then((chartData: Array<any>) => {
-      this.chartData = chartData[cacheKey];
-    })
+    this.chartDataCacheKey = `${from}#${until}#${group}`;
+    this.$consumptions.getChart(this.chartDataCacheKey, from, until, group).then(() => {})
   }
 
   private _getItems() {

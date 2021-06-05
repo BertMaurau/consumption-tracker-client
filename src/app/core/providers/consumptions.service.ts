@@ -138,7 +138,7 @@ export class ConsumptionsService {
 
     for (const [key, value] of Object.entries(this.consumptionsChartData)) {
 
-      const until = key.split('-')[1];
+      const until = key.split('#')[1];
 
       if (until === dateFormatConsumed) {
         this.consumptionsChartData[key] = this.consumptionsChartData[key].map((series: any) => {
