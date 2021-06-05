@@ -12,6 +12,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MomentModule } from 'ngx-moment';
 import { AddConsumptionDialogComponent } from './dialogs/add-consumption-dialog/add-consumption-dialog.component';
 import { ItemCategoryIconPipe } from '../core/pipes/item-category-icon.pipe';
+import { InUnitsPipe } from '../core/pipes/in-units.pipe';
 
 const modules = [
   CommonModule,
@@ -30,6 +31,7 @@ const modules = [
   declarations: [
     ImageUploadDialogComponent,
     FilterPipe,
+    InUnitsPipe,
     ItemCategoryIconPipe,
     AddConsumptionDialogComponent,
   ],
@@ -39,6 +41,7 @@ const modules = [
   exports: [
     ...modules,
     FilterPipe,
+    InUnitsPipe,
     ItemCategoryIconPipe,
   ],
   entryComponents: [

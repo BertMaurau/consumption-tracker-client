@@ -1,32 +1,32 @@
-<!-- <section class="section">
-    <h1 class="title">Hi, {{ this.authUser.first_name || '' }}</h1>
-    <h2 class="subtitle">
-        Here's your consumption summary for the last <strong>10 days</strong>.
-    </h2>
-</section> -->
-
 <section class="hero has-background-light">
 
     <section fxLayout="column" class="summary-container container hero-body">
 
-        <section fxLayout="column" fxLayout.gt-sm="row" class="mb-4">
-
-            <!-- Total display -->
-            <section fxFlex.gt-sm="25%" fxLayout="column" class="category-item pl-4 pr-4 mb-4">
-                <span class="is-uppercase has-text-weight-medium">Total consumption</span>
-                <section fxLayout="row">
-                    <span class="icon m-2 has-text-link">
-                        <i class="fas fa-tint fa-2x"></i>
-                    </span>
-                    <section fxLayout="column" class="pt-2">
-                        <span class="is-size-4">{{ this.summary.total }}</span>
-                    </section>
+        <!-- Total display -->
+        <!-- <section fxLayout="row" class="pl-4 pr-4 mb-4">
+            <span class="is-uppercase has-text-weight-medium">Total consumption</span>
+            <section fxLayout="row">
+                <span class="icon m-2 has-text-link">
+                    <i class="fas fa-tint fa-2x"></i>
+                </span>
+                <section fxLayout="column" class="pt-2">
+                    <span class="is-size-4">{{ this.summary.total | inUnits }}</span>
                 </section>
             </section>
+        </section> -->
+
+        <section class="section">
+            <h1 class="title">Hi, {{ this.authUser.first_name || '' }}</h1>
+            <h2 class="subtitle">
+                You've consumed a total of <span class="has-text-weight-medium">{{ this.summary.total | inUnits }}</span> with an avg. of <span class="has-text-weight-medium">{{ this.summary.daily_avg | inUnits }}</span> per day!
+            </h2>
+        </section>
+
+        <section fxLayout="column" fxLayout.gt-sm="row" class="mb-4">
 
             <ng-container *ngFor="let category of this.summary.categories">
 
-                <div fxFlex.gt-sm="25%" fxLayout="column" class="category-item pl-4 pr-4 mb-4">
+                <div fxFlex.gt-sm="33%" fxLayout="column" class="category-item pl-4 pr-4 mb-4">
 
                     <span class="is-uppercase has-text-weight-medium">{{ category.description }}</span>
 
@@ -42,8 +42,9 @@
 
                                 <div class="item-item">
                                     <span class="ml-2">{{ item.description }}</span>
-                                    <span fxFlex class="has-text-right is-size-7">{{ item.total_volume }} (Avg. {{
-                                        item.avg_volume }})</span>
+                                    <span fxFlex class="has-text-right is-size-7">{{ item.total_volume | inUnits }}
+                                        (Avg. {{
+                                        item.avg_volume | inUnits }})</span>
                                 </div>
 
                             </ng-container>
@@ -57,8 +58,9 @@
         </section>
 
         <div class="chart-container is-fullwidth mt-4 is-hidden-mobile" #chartContainerRef>
-            <ngx-charts-area-chart-stacked *ngIf="this.chartData" legendPosition="below" [curve]="this.chartCurve" [legend]="true"[gradient]="true" [xAxis]="false" [yAxis]="true" [timeline]="false"
-                 [results]="this.chartData">
+            <ngx-charts-area-chart-stacked *ngIf="this.chartData" legendPosition="below" [curve]="this.chartCurve"
+                [legend]="true" [gradient]="true" [xAxis]="false" [yAxis]="true" [timeline]="false"
+                [results]="this.chartData">
             </ngx-charts-area-chart-stacked>
         </div>
 
@@ -86,14 +88,17 @@
                 </h2>
             </ng-container>
 
-            <div class="consumption-item" fxLayout="row">
+            <!-- The actual item -->
+            <div class="consumption-item is-clickable" (click)="this.onEditConsumption(consumption)" fxLayout="row">
 
                 <span class="icon mr-4 m-2 has-text-link">
                     <i class="fas {{ consumption.attributes.item.item_category_id | categoryIcon }} fa-1x"></i>
                 </span>
 
                 <span>
-                    Consumed <strong>{{ consumption.volume }}</strong> of <strong>{{ consumption.attributes.item.description }}</strong> ({{ consumption.consumed_at.date | amFromUtc | amLocal | amDateFormat:'h:mm a' }})
+                    Consumed <strong>{{ consumption.volume | inUnits }}</strong> of <strong>{{
+                        consumption.attributes.item.description }}</strong> ({{ consumption.consumed_at.date | amFromUtc
+                    | amLocal | amDateFormat:'h:mm a' }})
                 </span>
             </div>
 

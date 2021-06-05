@@ -30,7 +30,7 @@
                 </button>
                 <button *ngIf="this.isEditing || this.isSavedState" [disabled]="this.isSavedState"
                     (click)="this.onSaveChanges()" class="button"
-                    [ngClass]="{ 'is-loading': this.isLoading, 'is-info': !this.isSavedState, 'is-success': this.isSavedState, 'is-inverted': this.isSavedState || this.isLoading }">
+                    [ngClass]="{ 'is-loading': this.isLoading, 'is-link': !this.isSavedState, 'is-success': this.isSavedState, 'is-inverted': this.isSavedState || this.isLoading }">
                     <ng-container *ngIf="!this.isSavedState else savedState">
                         <span>Save</span>
                     </ng-container>
