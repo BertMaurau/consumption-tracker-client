@@ -1,8 +1,8 @@
 {
-  "name": "consumption-tracker",
+  "name": "Consumption Tracker",
   "short_name": "consumption-tracker",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
+  "theme_color": "#3A73DC",
+  "background_color": "#F5F5F5",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
