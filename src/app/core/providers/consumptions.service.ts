@@ -107,7 +107,7 @@ export class ConsumptionsService {
 
     return new Promise<any>((resolve, reject) => {
 
-      this.$server.post(`/my/consumptions`, {item_id: itemId, volume, consumed_at: consumedAtUtc, notes}).subscribe((userConsumption: any) => {
+      this.$server.post(`/my/consumptions`, { item_id: itemId, volume, consumed_at: consumedAtUtc, notes }).subscribe((userConsumption: any) => {
 
         if (userConsumption) {
 
@@ -126,30 +126,91 @@ export class ConsumptionsService {
       });
     });
 
-    
+
   }
 
+  /**
+   * Add the user's consumption to the chart data
+   * @param {any} userConsumption The returned consumption
+   * @returns {void}
+   */
   private _addToChart(userConsumption: any): void {
 
+    // get the consumed item
+    const item: any = userConsumption.relations.item;
+
     // add the volume to the chart data
-
-    // consumed at is UTC time
-    const dateFormatConsumed = moment.utc(userConsumption.consumed_at.date).local().format('YYYY-MM-DD');
-
     for (const [key, value] of Object.entries(this.consumptionsChartData)) {
 
-      const until = key.split('#')[1];
+      const cacheKeyParts = key.split('#');
 
-      if (until === dateFormatConsumed) {
-        this.consumptionsChartData[key] = this.consumptionsChartData[key].map((series: any) => {
-          if (series.item_id === userConsumption.item_id) {
-            // last item in the series will always hold the volume for/until this day, so we
-            // can safely add the volume to that total
-            series.series[series.series.length - 1].value += userConsumption.volume;
+      let chartData = <Array<any>>value;
+      let dateFormatConsumed: string = null;
+
+      // check the grouping
+      switch (cacheKeyParts[2]) {
+        case 'day':
+
+          // create the label for day of consumption (consumed at is UTC time)
+          dateFormatConsumed = moment.utc(userConsumption.consumed_at.date).local().format('YYYY-MM-DD');
+
+          // check if there is already a series listed for that item
+          const itemSeries = chartData.find((item: any) => item.item_id === userConsumption.item_id);
+          if (!itemSeries) {
+
+            // no series yet, so we need to generate/build a full one
+            const dateEmptySeries: Array<any> = [];
+
+            // build the series' range
+            let dateFrom = moment(cacheKeyParts[0]).format('YYYY-MM-DD');
+            let dateUntil = moment(cacheKeyParts[1]).format('YYYY-MM-DD');
+
+            // creating JS date objects
+            var start = new Date(dateFrom);
+            var end = new Date(dateUntil);
+
+            // logic for getting rest of the dates between two dates("FromDate" to "EndDate")
+            while (start < end) {
+              dateEmptySeries.push({ name: moment(start).format('YYYY-MM-DD'), value: 0 });
+              const newDate = start.setDate(start.getDate() + 1);
+              start = new Date(newDate);
+            }
+
+            // add the item to the series with empty values (gets added later)
+            chartData.push({
+              item_id: item.id,
+              name: item.description,
+              series: dateEmptySeries,
+            });
           }
-          return series;
-        })
+
+          break;
+        case 'week':
+
+          break;
+        case 'month':
+
+          break;
+        default:
+          break;
       }
+
+      // reached the part where we update the series value
+      chartData = chartData.map((itemSeries: any) => {
+        if (itemSeries.item_id === userConsumption.item_id) {
+          itemSeries.series = itemSeries.series.map((series: any) => {
+            if (series.name === dateFormatConsumed) {
+              series.value += userConsumption.volume;
+            }
+            return series;
+          });
+        }
+        return itemSeries;
+      });
+
+      // update final object
+      this.consumptionsChartData[key] = chartData;
+
     }
 
     // trigger the subject
@@ -160,7 +221,7 @@ export class ConsumptionsService {
    * Generate a query string from key-value items
    * @param {any} query
    */
-   private _buildQuerystring(query: any): string {
+  private _buildQuerystring(query: any): string {
     let qs = '';
     qs += query.orderBy ? `&orderBy=${query.orderBy || ''}` : '';
     return qs;
