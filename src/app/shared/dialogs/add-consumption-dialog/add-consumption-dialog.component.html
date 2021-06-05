@@ -1,6 +1,6 @@
 <div mat-dialog-header class="dialog-header" fxLayout="row" fxLayoutAlign="flex-start center">
 
-    <h1 fxFlex class="title is-4">Add new</h1>
+    <h1 fxFlex class="title is-4">{{ this.userConsumption ? 'Update' : 'Add new' }} consumption</h1>
 
     <button class="button is-link is-inverted is-normal" (click)="this.onClose()" matTooltip="Close">
         <span class="icon is-small">
@@ -19,7 +19,7 @@
         </div>
 
         <!-- List of suggestions -->
-        <ng-container *ngIf="this.suggestedConsumptions.length > 0">
+        <ng-container *ngIf="this.suggestedConsumptions.length > 0 && !this.userConsumption">
             <span class="has-text-weight-medium">Quick consume (based on your recent activity)</span>
 
             <section class="suggestions pt-2 pb-3 mb-1 mt-1" fxLayout="row">
@@ -94,9 +94,7 @@
         </section>
 
         <!-- Consumed at input -->
-
         <span class="has-text-weight-medium">Consumed at</span>
-
         <div class="field">
             <div class="control has-icons-left has-icons-right">
                 <input class="input" [ngClass]="{'is-danger': this.controlHasError('consumed_at') }"
@@ -110,11 +108,19 @@
                 class="help is-danger has-text-left">Oops! Consumed is required</p>
         </div>
 
+        <!-- Notes-->
+        <span class="has-text-weight-medium">Notes</span>
+        <div class="field">
+            <div class="control">
+                <textarea class="textarea" formControlName="notes" rows="2" name="notes"></textarea>
+            </div>
+        </div>
+
     </form>
 
     <div class="dialog-actions mt-4 is-fullwidth" fxLayout="row" fxLayoutAlign="flex-end">
         <button [ngClass]="{'is-loading' : this.isLoading }" [disabled]="this.isLoading" class="button is-link"
-            (click)="this.onAdd()">Add consumption</button>
+            (click)="this.onAdd()">{{ this.userConsumption ? 'Update' : 'Add' }} consumption</button>
     </div>
 
 </mat-dialog-content>

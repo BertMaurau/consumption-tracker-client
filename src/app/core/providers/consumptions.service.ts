@@ -191,17 +191,14 @@ export class ConsumptionsService {
 
   /**
    * Register a new User Consumption
-   * @param {number} itemId The ID of the Item that was consumed
-   * @param {number} volume The volume that was consumed
-   * @param {string} consumedAtUtc The date-format when it was consumed
-   * @param {string} notes Notes about the consumption
+   * @param {any} payload The payload
    * @returns {Promise<Array<any>>}
    */
-  public create(itemId: number, volume: number, consumedAtUtc: string, notes?: string): Promise<Array<any>> {
+  public create(payload: any): Promise<Array<any>> {
 
     return new Promise<any>((resolve, reject) => {
 
-      this.$server.post(`/my/consumptions`, { item_id: itemId, volume, consumed_at: consumedAtUtc, notes }).subscribe((userConsumption: any) => {
+      this.$server.post(`/my/consumptions`, payload).subscribe((userConsumption: any) => {
 
         if (userConsumption) {
 
@@ -230,6 +227,49 @@ export class ConsumptionsService {
       });
     });
   }
+
+  /**
+   * Update an existing consumption
+   * @param {number} userConsumptionId The resource ID
+   * @param {any} payload The new payload
+   * @returns {Promise<Array<any>>}
+   */
+  public update(userConsumptionId: number, payload: any): Promise<Array<any>> {
+    return new Promise<any>((resolve, reject) => {
+
+      this.$server.patch(`/my/consumptions`, userConsumptionId, payload).subscribe((userConsumption: any) => {
+
+        if (userConsumption) {
+
+          // add to list of fetched consumptions
+          this.consumptionsListData = this.consumptionsListData.map((uc: any) => {
+            if (uc.id === userConsumptionId) {
+              return userConsumption;
+            }
+            return uc;
+          })
+
+          // sort based on consumption date
+          this.consumptionsListData.sort((a: any, b: any) => { return new Date(b.consumed_at.date).getTime() - new Date(a.consumed_at.date).getTime(); });
+
+          // trigger subscriptions
+          this.consumptionsList.next(this.consumptionsListData);
+
+          // other actions..
+
+          // we should update the chart and summary
+          // but gets a bit tricky then. Have to keep track of
+          // the changed volume, the change of an item, the date
+          // .. Perfectly doable, just not in the mood
+
+          // return the result
+          resolve(userConsumption);
+        }
+      }, (err: HttpErrorResponse) => {
+        reject(err);
+      });
+    });
+  };
 
   /**
    * Add the user's consumption to the chart data

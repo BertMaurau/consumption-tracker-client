@@ -14,6 +14,9 @@ import { ItemService } from 'src/app/core/providers/item.service';
 })
 export class AddConsumptionDialogComponent implements OnInit {
 
+  // holds the consumption to edit (if in edit mode)
+  public userConsumption: any = null;
+
   public formConsumption: FormGroup;
 
   public isLoading: boolean = false;
@@ -32,6 +35,9 @@ export class AddConsumptionDialogComponent implements OnInit {
     private $item: ItemService,
     @Inject(MAT_DIALOG_DATA) private data: any,
   ) {
+
+    this.userConsumption = this.data.userConsumption ?? null;
+
     this.$item.items.subscribe((items: Array<any>) => {
       this.items = items;
 
@@ -51,8 +57,23 @@ export class AddConsumptionDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // set the default time
-    this.formConsumption.patchValue({consumed_at: moment().format('YYYY-MM-DD[T]HH:mm')});
+
+    if (this.userConsumption) { 
+
+      const consumedAt = moment.utc(this.userConsumption.consumed_at.date).local().format('YYYY-MM-DD[T]HH:mm');
+
+      this.formConsumption.patchValue({
+        item_id: this.userConsumption.item_id,
+        volume: this.userConsumption.volume,
+        consumed_at: consumedAt,
+        notes: this.userConsumption.notes,
+      });
+
+    } else {
+      // set the default time to now
+      this.formConsumption.patchValue({consumed_at: moment().format('YYYY-MM-DD[T]HH:mm')});
+    }
+   
   }
 
   /**
@@ -116,9 +137,19 @@ export class AddConsumptionDialogComponent implements OnInit {
 
     // build the payload
     const payload = this.formConsumption.value;
-    const consumedAt = moment(payload.consumed_at).utc().format();
 
-    this.$consumption.create(payload.item_id, payload.volume, consumedAt, payload.notes).then((userConsumption: any) => {
+    // convert to UTC
+    const consumedAt = moment(payload.consumed_at).utc().format();
+    payload.consumed_at = consumedAt;
+
+    let request;
+    if (this.userConsumption) {
+      request = this.$consumption.update(this.userConsumption.id, payload);
+    } else {
+      request = this.$consumption.create(payload);
+    }
+
+    request.then((userConsumption: any) => {
 
       // do stuff?
 
