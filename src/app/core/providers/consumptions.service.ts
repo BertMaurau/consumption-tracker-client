@@ -21,6 +21,9 @@ export class ConsumptionsService {
   constructor(
     private $server: ServerService,
   ) {
+    this.summary.subscribe((summary: any) => {
+      this.summaryData = summary;
+    })
     this.consumptionsList.subscribe((consumptionsList: Array<any>) => {
       this.consumptionsListData = consumptionsList;
     })
@@ -29,6 +32,46 @@ export class ConsumptionsService {
     })
   }
 
+
+  /**
+   * Get the summary of the User's consumptions
+   * @returns {Promise<any> }
+   */
+  public getSummary(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+
+      // check if already fetched before
+      if (this.summaryData) {
+        resolve(this.summaryData);
+        return;
+      }
+
+      this.$server.get(`/my/consumptions?display=summary`).subscribe((summary: any) => {
+
+        if (summary) {
+
+          // store
+          this.summaryData = summary;
+
+          // trigger the subject
+          this.summary.next(this.summaryData);
+
+          // return the result
+          resolve(this.summaryData);
+        }
+      }, (err: HttpErrorResponse) => {
+        reject(err);
+      });
+    });
+  }
+
+  /**
+   * Get a list of consumptions
+   * @param {any} query The filter query
+   * @param {number} take Pagination take
+   * @param {number} skip Pagination skip
+   * @returns {Promise<Array<any>>}
+   */
   public get(query?: any, take: number = 50, skip: number = 0): Promise<Array<any>> {
     return new Promise<any>((resolve, reject) => {
 
@@ -39,16 +82,18 @@ export class ConsumptionsService {
         if (userConsumptions) {
 
           if (skip === 0) {
+            // reset the list, since we started a new result set
             this.consumptionsListData = userConsumptions;
           } else {
-            // append
+            // append to current list, since we expanded the list
             this.consumptionsListData = [].concat(this.consumptionsListData, userConsumptions);
           }
 
           // trigger the subject
           this.consumptionsList.next(this.consumptionsListData);
 
-          resolve(this.consumptionsListData);
+          // return the result
+          resolve(userConsumptions);
         }
       }, (err: HttpErrorResponse) => {
         reject(err);
@@ -56,46 +101,35 @@ export class ConsumptionsService {
     });
   }
 
-  public getSummary(): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      if (this.summaryData) {
-        resolve(this.summaryData);
-        return;
-      }
-      this.$server.get(`/my/consumptions?display=summary`).subscribe((summary: any) => {
-
-        if (summary) {
-
-          this.summaryData = summary;
-
-          // trigger the subject
-          this.summary.next(this.summaryData);
-
-          resolve(this.summaryData);
-        }
-      }, (err: HttpErrorResponse) => {
-        reject(err);
-      });
-    });
-  }
-
+  /**
+   * Get consumptions (as Chart-data)
+   * @param {string} cacheKey The cache-key (from#until#group)
+   * @param {string} from The date-format from
+   * @param {string} until The date format until
+   * @param {string} group The grouping key
+   * @returns {Promise<Array<any>>}
+   */
   public getChart(cacheKey: string, from: string, until: string, group: string = 'day'): Promise<Array<any>> {
     return new Promise<any>((resolve, reject) => {
 
+      // check if specific date-range-grouping has been fetched before
       if (this.consumptionsChartData.hasOwnProperty(cacheKey)) {
         resolve(this.consumptionsChartData);
         return;
       }
+
       this.$server.get(`/my/consumptions?display=chart&period=custom&group=${group}&from=${from}&until=${until}`).subscribe((chartData: Array<any>) => {
 
         if (chartData) {
 
+          // cache the result
           this.consumptionsChartData[cacheKey] = chartData;
 
           // trigger the subject
           this.consumptionsChart.next(this.consumptionsChartData);
 
-          resolve(this.consumptionsChartData);
+          // return the result
+          resolve(chartData);
         }
       }, (err: HttpErrorResponse) => {
         reject(err);
@@ -103,6 +137,14 @@ export class ConsumptionsService {
     });
   }
 
+  /**
+   * Register a new User Consumption
+   * @param {number} itemId The ID of the Item that was consumed
+   * @param {number} volume The volume that was consumed
+   * @param {string} consumedAtUtc The date-format when it was consumed
+   * @param {string} notes Notes about the consumption
+   * @returns {Promise<Array<any>>}
+   */
   public create(itemId: number, volume: number, consumedAtUtc: string, notes?: string): Promise<Array<any>> {
 
     return new Promise<any>((resolve, reject) => {
@@ -111,22 +153,30 @@ export class ConsumptionsService {
 
         if (userConsumption) {
 
+          // add to list of fetched consumptions
           this.consumptionsListData.unshift(userConsumption);
+
+          // sort based on consumption date
+          this.consumptionsListData.sort((a: any, b: any) => { return new Date(b.consumed_at.date).getTime() - new Date(a.consumed_at.date).getTime(); });
+
+          // trigger subscriptions
           this.consumptionsList.next(this.consumptionsListData);
 
-          // other lists..
+          // other actions..
 
           // update chart
           this._addToChart(userConsumption);
 
+          // update the summary
+          this._addToSummary(userConsumption);
+
+          // return the result
           resolve(userConsumption);
         }
       }, (err: HttpErrorResponse) => {
         reject(err);
       });
     });
-
-
   }
 
   /**
@@ -137,7 +187,7 @@ export class ConsumptionsService {
   private _addToChart(userConsumption: any): void {
 
     // get the consumed item
-    const item: any = userConsumption.relations.item;
+    const consumedItem: any = userConsumption.relations.item;
 
     // add the volume to the chart data
     for (const [key, value] of Object.entries(this.consumptionsChartData)) {
@@ -190,8 +240,8 @@ export class ConsumptionsService {
 
         // add the item to the series with empty values (gets added later)
         chartData.push({
-          name: item.description,
-          item_id: item.id,
+          name: consumedItem.description,
+          item_id: consumedItem.id,
           series: dateEmptySeries,
         });
 
@@ -217,6 +267,48 @@ export class ConsumptionsService {
 
     // trigger the subject
     this.consumptionsChart.next(this.consumptionsChartData);
+  }
+
+  /**
+   * Add the user's consumption to the summary data
+   * @param {any} userConsumption The returned consumption
+   * @returns {void}
+   */
+  private _addToSummary(userConsumption: any): void {
+
+    const consumedItem: any = userConsumption.relations.item;
+
+    // update the total
+    this.summaryData.total += userConsumption.volume;
+
+    // update specific category
+    this.summaryData.categories.map((category: any) => {
+      if (category.id === consumedItem.item_category_id) {
+        category.total_volume += userConsumption.volume;
+
+        // check if item is already listed there
+        const item = category.items.find((item: any) => item.id === consumedItem.id);
+        if (!item) {
+          // create a new entry for this item
+          category.items.push({
+            avg_volume: userConsumption.volume,
+            description: consumedItem.description,
+            id: consumedItem.id,
+            total_volume: userConsumption.volume,
+          });
+        } else {
+          // add the volume to the already-set total
+          item.total_volume += userConsumption.volume;
+
+          // what do we do with the avg..?
+        }
+      }
+
+      return category;
+    })
+
+    // trigger the subject
+    this.summary.next(this.summaryData);
   }
 
   /**
