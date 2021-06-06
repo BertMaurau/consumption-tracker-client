@@ -108,9 +108,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
 
     // only load chart data for bigger screens
-    if (this.screenWidth > 768) {
+    // if (this.screenWidth > 768) {
       this.onChartGroupByChanged(this.chartGroupBy.key);
-    }
+    // }
 
     this._getConsumptions();
     this._getSummary();

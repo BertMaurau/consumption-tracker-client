@@ -57,9 +57,9 @@
 
         </section>
 
-        <div class="chart-container is-fullwidth mt-4 is-hidden-mobile" #chartContainerRef>
+        <div class="chart-container is-fullwidth mt-4 " #chartContainerRef> <!-- is-hidden-mobile -->
             <ngx-charts-area-chart-stacked *ngIf="this.chartData" legendPosition="below" [curve]="this.chartCurve"
-                [legend]="true" [gradient]="true" [xAxis]="false" [yAxis]="true" [timeline]="false"
+                [legend]="(this.screenWidth >= 768)" [gradient]="true" [xAxis]="false" [yAxis]="true" [timeline]="false"
                 [results]="this.chartData">
             </ngx-charts-area-chart-stacked>
         </div>
