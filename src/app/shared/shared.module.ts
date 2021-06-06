@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ImageUploadDialogComponent } from './dialogs/image-upload-dialog/image-upload-dialog.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { DndModule } from 'ngx-drag-drop';
@@ -21,6 +22,7 @@ const modules = [
   ReactiveFormsModule,
   MatDialogModule,
   MatTooltipModule,
+  MatSnackBarModule,
   ImageCropperModule,
   DndModule,
   NgxChartsModule,

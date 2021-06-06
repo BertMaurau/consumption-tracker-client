@@ -4,8 +4,9 @@
   "theme_color": "#3A73DC",
   "background_color": "#F5F5F5",
   "display": "standalone",
+  "orientation": "portrait",
   "scope": "./",
-  "start_url": "./",
+  "start_url": "https://consumption-tracker.bertmaurau.be/index.html",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
