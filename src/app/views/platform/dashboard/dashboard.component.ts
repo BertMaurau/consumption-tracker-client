@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/core/providers/auth.service';
 import * as moment from 'moment';
 import { ConsumptionsService } from 'src/app/core/providers/consumptions.service';
@@ -14,6 +14,13 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.screenWidth = event.target.innerWidth;
+  }
+
+  public screenWidth: number = window.innerWidth;
 
   public authUser: any = {};
 
@@ -99,7 +106,11 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.onChartGroupByChanged(this.chartGroupBy.key);
+
+    // only load chart data for bigger screens
+    if (this.screenWidth > 768) {
+      this.onChartGroupByChanged(this.chartGroupBy.key);
+    }
 
     this._getConsumptions();
     this._getSummary();

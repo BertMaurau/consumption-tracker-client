@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from 'src/app/core/providers/auth.service';
-import { ConsumptionsService } from 'src/app/core/providers/consumptions.service';
 import { AddConsumptionDialogComponent } from 'src/app/shared/dialogs/add-consumption-dialog/add-consumption-dialog.component';
 
 @Component({
@@ -9,23 +8,23 @@ import { AddConsumptionDialogComponent } from 'src/app/shared/dialogs/add-consum
   templateUrl: './platform.component.html',
   styleUrls: ['./platform.component.scss']
 })
-export class PlatformComponent implements OnInit {
+export class PlatformComponent {
 
   public authUser: any = {};
 
   constructor(
     private dialog: MatDialog,
     private $auth: AuthService,
-    private $consumption: ConsumptionsService,
   ) { 
     this.$auth.authUser.subscribe((authUser: any) => {
       this.authUser = authUser;
     })
   }
 
-  ngOnInit(): void {
-  }
-
+  /**
+   * Open new consumption dialog via floating fab button
+   * @returns {void}
+   */
   public onAddConsumption(): void {
     const dialogRef = this.dialog.open(AddConsumptionDialogComponent, {
       panelClass: ['custom-dialog', 'w512'],
@@ -34,8 +33,6 @@ export class PlatformComponent implements OnInit {
       autoFocus: false,
     });
 
-    dialogRef.afterClosed().subscribe((payload?: any) => {
-      
-    });
+    dialogRef.afterClosed().subscribe((payload?: any) => {});
   }
 }
